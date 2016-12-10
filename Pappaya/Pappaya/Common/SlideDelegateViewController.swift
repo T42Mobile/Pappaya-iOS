@@ -1,18 +1,22 @@
 //
-//  ViewController.swift
+//  SlideDelegateViewController.swift
 //  Pappaya
 //
-//  Created by Thirumal on 28/11/16.
+//  Created by Thirumal on 02/12/16.
 //  Copyright © 2016 Think42labs. All rights reserved.
 //
 
 import UIKit
 
-class ViewController: UIViewController {
+class SlideDelegateViewController: UIViewController, SlideMenuControllerDelegate
+{
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+
+        // Do any additional setup after loading the view.
+        
+        self.addLeftBarButtonWithImage(UIImage(named : "icon-menu")!)
     }
 
     override func didReceiveMemoryWarning() {
@@ -20,6 +24,4 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
 
-
 }
-

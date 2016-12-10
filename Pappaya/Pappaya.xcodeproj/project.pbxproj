@@ -7,14 +7,35 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5A31DA901DEECDD8009592CC /* LandingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A31DA8F1DEECDD8009592CC /* LandingViewController.swift */; };
+		5A3DF0CA1DED51810062B7C7 /* UserSideMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A3DF0C81DED51810062B7C7 /* UserSideMenuViewController.swift */; };
+		5A3DF0D21DED52F10062B7C7 /* MenuSectionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A3DF0CE1DED52F10062B7C7 /* MenuSectionTableViewCell.swift */; };
+		5A3DF0D31DED52F10062B7C7 /* MenuTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A3DF0CF1DED52F10062B7C7 /* MenuTableViewCell.swift */; };
+		5A3DF0D41DED52F10062B7C7 /* SlideMenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A3DF0D01DED52F10062B7C7 /* SlideMenuController.swift */; };
+		5A3DF0D61DED94370062B7C7 /* SideMenuModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A3DF0D51DED94370062B7C7 /* SideMenuModel.swift */; };
+		5A3DF0D91DED968F0062B7C7 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A3DF0D81DED968F0062B7C7 /* LoginViewController.swift */; };
+		5A3DF0DD1DED9EB80062B7C7 /* FloatLabelTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A3DF0DB1DED9EB80062B7C7 /* FloatLabelTextField.swift */; };
+		5A3DF0DE1DED9EB80062B7C7 /* FloatLabelTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A3DF0DC1DED9EB80062B7C7 /* FloatLabelTextView.swift */; };
+		5A8552651DEC59BD000C935E /* CommonFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A8552621DEC59BD000C935E /* CommonFunctions.swift */; };
+		5A8552661DEC59BD000C935E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A8552631DEC59BD000C935E /* Constants.swift */; };
+		5A8552671DEC59BD000C935E /* CustomAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A8552641DEC59BD000C935E /* CustomAlertController.swift */; };
 		5ABE93501DEC127900851382 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ABE934F1DEC127900851382 /* AppDelegate.swift */; };
-		5ABE93521DEC127900851382 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ABE93511DEC127900851382 /* ViewController.swift */; };
 		5ABE93551DEC127900851382 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5ABE93531DEC127900851382 /* Main.storyboard */; };
 		5ABE93581DEC127900851382 /* Pappaya.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5ABE93561DEC127900851382 /* Pappaya.xcdatamodeld */; };
 		5ABE935A1DEC127900851382 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5ABE93591DEC127900851382 /* Assets.xcassets */; };
 		5ABE935D1DEC127900851382 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5ABE935B1DEC127900851382 /* LaunchScreen.storyboard */; };
 		5ABE93681DEC127A00851382 /* PappayaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ABE93671DEC127A00851382 /* PappayaTests.swift */; };
 		5ABE93731DEC127A00851382 /* PappayaUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ABE93721DEC127A00851382 /* PappayaUITests.swift */; };
+		5AEB0F1B1DF5B98B005B7481 /* NewTimesheetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AEB0F1A1DF5B98B005B7481 /* NewTimesheetViewController.swift */; };
+		5AF121D11DF15492005E22F2 /* TimeSheetDateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AF121D01DF15492005E22F2 /* TimeSheetDateCell.swift */; };
+		5AF121D31DF154B5005E22F2 /* TimeSheetSectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AF121D21DF154B5005E22F2 /* TimeSheetSectionCell.swift */; };
+		5AF121D61DF1565D005E22F2 /* TimeSheetDetailModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AF121D51DF1565D005E22F2 /* TimeSheetDetailModel.swift */; };
+		5AF121D81DF156B0005E22F2 /* TimeSheetDateDetailModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AF121D71DF156B0005E22F2 /* TimeSheetDateDetailModel.swift */; };
+		5AF121DA1DF179F3005E22F2 /* TimeSheetProjectDetailModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AF121D91DF179F3005E22F2 /* TimeSheetProjectDetailModel.swift */; };
+		5AF121DC1DF199C4005E22F2 /* MyTimesheetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AF121DB1DF199C4005E22F2 /* MyTimesheetViewController.swift */; };
+		5AF121DE1DF199EB005E22F2 /* TimeSheetToApproveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AF121DD1DF199EB005E22F2 /* TimeSheetToApproveViewController.swift */; };
+		5AF121E01DF1A314005E22F2 /* TimesheetListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AF121DF1DF1A314005E22F2 /* TimesheetListTableViewCell.swift */; };
+		5AF121E21DF1B0F6005E22F2 /* SlideDelegateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AF121E11DF1B0F6005E22F2 /* SlideDelegateViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,9 +56,20 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5A31DA8F1DEECDD8009592CC /* LandingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LandingViewController.swift; path = Controller/Landing/LandingViewController.swift; sourceTree = "<group>"; };
+		5A3DF0C81DED51810062B7C7 /* UserSideMenuViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UserSideMenuViewController.swift; path = Controller/Landing/UserSideMenuViewController.swift; sourceTree = "<group>"; };
+		5A3DF0CE1DED52F10062B7C7 /* MenuSectionTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MenuSectionTableViewCell.swift; path = "LibraryFiles/Side Menu/MenuSectionTableViewCell.swift"; sourceTree = "<group>"; };
+		5A3DF0CF1DED52F10062B7C7 /* MenuTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MenuTableViewCell.swift; path = "LibraryFiles/Side Menu/MenuTableViewCell.swift"; sourceTree = "<group>"; };
+		5A3DF0D01DED52F10062B7C7 /* SlideMenuController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SlideMenuController.swift; path = "LibraryFiles/Side Menu/SlideMenuController.swift"; sourceTree = "<group>"; };
+		5A3DF0D51DED94370062B7C7 /* SideMenuModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SideMenuModel.swift; path = "LibraryFiles/Side Menu/SideMenuModel.swift"; sourceTree = "<group>"; };
+		5A3DF0D81DED968F0062B7C7 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LoginViewController.swift; path = Controller/Login/LoginViewController.swift; sourceTree = "<group>"; };
+		5A3DF0DB1DED9EB80062B7C7 /* FloatLabelTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FloatLabelTextField.swift; path = LibraryFiles/FloatingTextField/FloatLabelTextField.swift; sourceTree = "<group>"; };
+		5A3DF0DC1DED9EB80062B7C7 /* FloatLabelTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FloatLabelTextView.swift; path = LibraryFiles/FloatingTextField/FloatLabelTextView.swift; sourceTree = "<group>"; };
+		5A8552621DEC59BD000C935E /* CommonFunctions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CommonFunctions.swift; path = Common/CommonFunctions.swift; sourceTree = "<group>"; };
+		5A8552631DEC59BD000C935E /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Constants.swift; path = Common/Constants.swift; sourceTree = "<group>"; };
+		5A8552641DEC59BD000C935E /* CustomAlertController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CustomAlertController.swift; path = Common/CustomAlertController.swift; sourceTree = "<group>"; };
 		5ABE934C1DEC127900851382 /* Pappaya.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pappaya.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5ABE934F1DEC127900851382 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		5ABE93511DEC127900851382 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		5ABE93541DEC127900851382 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		5ABE93571DEC127900851382 /* Pappaya.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Pappaya.xcdatamodel; sourceTree = "<group>"; };
 		5ABE93591DEC127900851382 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -49,6 +81,16 @@
 		5ABE936E1DEC127A00851382 /* PappayaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PappayaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5ABE93721DEC127A00851382 /* PappayaUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PappayaUITests.swift; sourceTree = "<group>"; };
 		5ABE93741DEC127A00851382 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5AEB0F1A1DF5B98B005B7481 /* NewTimesheetViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NewTimesheetViewController.swift; path = "Controller/New timesheet/NewTimesheetViewController.swift"; sourceTree = "<group>"; };
+		5AF121D01DF15492005E22F2 /* TimeSheetDateCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TimeSheetDateCell.swift; path = View/Landing/TimeSheetDateCell.swift; sourceTree = "<group>"; };
+		5AF121D21DF154B5005E22F2 /* TimeSheetSectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TimeSheetSectionCell.swift; path = View/Landing/TimeSheetSectionCell.swift; sourceTree = "<group>"; };
+		5AF121D51DF1565D005E22F2 /* TimeSheetDetailModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TimeSheetDetailModel.swift; path = Model/TimeSheet/TimeSheetDetailModel.swift; sourceTree = "<group>"; };
+		5AF121D71DF156B0005E22F2 /* TimeSheetDateDetailModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TimeSheetDateDetailModel.swift; path = Model/TimeSheet/TimeSheetDateDetailModel.swift; sourceTree = "<group>"; };
+		5AF121D91DF179F3005E22F2 /* TimeSheetProjectDetailModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeSheetProjectDetailModel.swift; sourceTree = "<group>"; };
+		5AF121DB1DF199C4005E22F2 /* MyTimesheetViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MyTimesheetViewController.swift; path = Controller/Landing/MyTimesheetViewController.swift; sourceTree = "<group>"; };
+		5AF121DD1DF199EB005E22F2 /* TimeSheetToApproveViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TimeSheetToApproveViewController.swift; path = Controller/Landing/TimeSheetToApproveViewController.swift; sourceTree = "<group>"; };
+		5AF121DF1DF1A314005E22F2 /* TimesheetListTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TimesheetListTableViewCell.swift; path = View/Landing/TimesheetListTableViewCell.swift; sourceTree = "<group>"; };
+		5AF121E11DF1B0F6005E22F2 /* SlideDelegateViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SlideDelegateViewController.swift; path = Common/SlideDelegateViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,6 +118,91 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5A3DF0C61DED51590062B7C7 /* Landing */ = {
+			isa = PBXGroup;
+			children = (
+				5A3DF0C81DED51810062B7C7 /* UserSideMenuViewController.swift */,
+				5A31DA8F1DEECDD8009592CC /* LandingViewController.swift */,
+				5AF121DB1DF199C4005E22F2 /* MyTimesheetViewController.swift */,
+				5AF121DD1DF199EB005E22F2 /* TimeSheetToApproveViewController.swift */,
+			);
+			name = Landing;
+			sourceTree = "<group>";
+		};
+		5A3DF0CB1DED527A0062B7C7 /* Library Files */ = {
+			isa = PBXGroup;
+			children = (
+				5A3DF0DA1DED9E870062B7C7 /* FloatingTextEdit */,
+				5A3DF0CC1DED528B0062B7C7 /* Side Menu */,
+			);
+			name = "Library Files";
+			sourceTree = "<group>";
+		};
+		5A3DF0CC1DED528B0062B7C7 /* Side Menu */ = {
+			isa = PBXGroup;
+			children = (
+				5A3DF0D51DED94370062B7C7 /* SideMenuModel.swift */,
+				5A3DF0CE1DED52F10062B7C7 /* MenuSectionTableViewCell.swift */,
+				5A3DF0CF1DED52F10062B7C7 /* MenuTableViewCell.swift */,
+				5A3DF0D01DED52F10062B7C7 /* SlideMenuController.swift */,
+			);
+			name = "Side Menu";
+			sourceTree = "<group>";
+		};
+		5A3DF0D71DED96400062B7C7 /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				5A3DF0D81DED968F0062B7C7 /* LoginViewController.swift */,
+			);
+			name = Login;
+			sourceTree = "<group>";
+		};
+		5A3DF0DA1DED9E870062B7C7 /* FloatingTextEdit */ = {
+			isa = PBXGroup;
+			children = (
+				5A3DF0DB1DED9EB80062B7C7 /* FloatLabelTextField.swift */,
+				5A3DF0DC1DED9EB80062B7C7 /* FloatLabelTextView.swift */,
+			);
+			name = FloatingTextEdit;
+			sourceTree = "<group>";
+		};
+		5A85525E1DEC5963000C935E /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				5A8552621DEC59BD000C935E /* CommonFunctions.swift */,
+				5AF121E11DF1B0F6005E22F2 /* SlideDelegateViewController.swift */,
+				5A8552631DEC59BD000C935E /* Constants.swift */,
+				5A8552641DEC59BD000C935E /* CustomAlertController.swift */,
+			);
+			name = Common;
+			sourceTree = "<group>";
+		};
+		5A85525F1DEC5975000C935E /* View */ = {
+			isa = PBXGroup;
+			children = (
+				5AF121CF1DF1541D005E22F2 /* Landing */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		5A8552601DEC597F000C935E /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				5AEB0F191DF5B939005B7481 /* New timesheet */,
+				5A3DF0D71DED96400062B7C7 /* Login */,
+				5A3DF0C61DED51590062B7C7 /* Landing */,
+			);
+			name = Controller;
+			sourceTree = "<group>";
+		};
+		5A8552611DEC598C000C935E /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				5AF121D41DF1562D005E22F2 /* TimeSheet */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
 		5ABE93431DEC127900851382 = {
 			isa = PBXGroup;
 			children = (
@@ -100,7 +227,11 @@
 			isa = PBXGroup;
 			children = (
 				5ABE934F1DEC127900851382 /* AppDelegate.swift */,
-				5ABE93511DEC127900851382 /* ViewController.swift */,
+				5A3DF0CB1DED527A0062B7C7 /* Library Files */,
+				5A8552611DEC598C000C935E /* Model */,
+				5A8552601DEC597F000C935E /* Controller */,
+				5A85525F1DEC5975000C935E /* View */,
+				5A85525E1DEC5963000C935E /* Common */,
 				5ABE93531DEC127900851382 /* Main.storyboard */,
 				5ABE93591DEC127900851382 /* Assets.xcassets */,
 				5ABE935B1DEC127900851382 /* LaunchScreen.storyboard */,
@@ -126,6 +257,34 @@
 				5ABE93741DEC127A00851382 /* Info.plist */,
 			);
 			path = PappayaUITests;
+			sourceTree = "<group>";
+		};
+		5AEB0F191DF5B939005B7481 /* New timesheet */ = {
+			isa = PBXGroup;
+			children = (
+				5AEB0F1A1DF5B98B005B7481 /* NewTimesheetViewController.swift */,
+			);
+			name = "New timesheet";
+			sourceTree = "<group>";
+		};
+		5AF121CF1DF1541D005E22F2 /* Landing */ = {
+			isa = PBXGroup;
+			children = (
+				5AF121D01DF15492005E22F2 /* TimeSheetDateCell.swift */,
+				5AF121D21DF154B5005E22F2 /* TimeSheetSectionCell.swift */,
+				5AF121DF1DF1A314005E22F2 /* TimesheetListTableViewCell.swift */,
+			);
+			name = Landing;
+			sourceTree = "<group>";
+		};
+		5AF121D41DF1562D005E22F2 /* TimeSheet */ = {
+			isa = PBXGroup;
+			children = (
+				5AF121D51DF1565D005E22F2 /* TimeSheetDetailModel.swift */,
+				5AF121D91DF179F3005E22F2 /* TimeSheetProjectDetailModel.swift */,
+				5AF121D71DF156B0005E22F2 /* TimeSheetDateDetailModel.swift */,
+			);
+			name = TimeSheet;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -262,9 +421,30 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5ABE93521DEC127900851382 /* ViewController.swift in Sources */,
+				5A3DF0D21DED52F10062B7C7 /* MenuSectionTableViewCell.swift in Sources */,
+				5AF121DA1DF179F3005E22F2 /* TimeSheetProjectDetailModel.swift in Sources */,
+				5AF121E01DF1A314005E22F2 /* TimesheetListTableViewCell.swift in Sources */,
+				5AF121E21DF1B0F6005E22F2 /* SlideDelegateViewController.swift in Sources */,
+				5AF121D81DF156B0005E22F2 /* TimeSheetDateDetailModel.swift in Sources */,
+				5A8552671DEC59BD000C935E /* CustomAlertController.swift in Sources */,
+				5AF121D31DF154B5005E22F2 /* TimeSheetSectionCell.swift in Sources */,
+				5A8552651DEC59BD000C935E /* CommonFunctions.swift in Sources */,
+				5AEB0F1B1DF5B98B005B7481 /* NewTimesheetViewController.swift in Sources */,
+				5AF121D11DF15492005E22F2 /* TimeSheetDateCell.swift in Sources */,
+				5AF121DC1DF199C4005E22F2 /* MyTimesheetViewController.swift in Sources */,
+				5A3DF0DE1DED9EB80062B7C7 /* FloatLabelTextView.swift in Sources */,
+				5A3DF0DD1DED9EB80062B7C7 /* FloatLabelTextField.swift in Sources */,
+				5A3DF0D31DED52F10062B7C7 /* MenuTableViewCell.swift in Sources */,
+				5AF121DE1DF199EB005E22F2 /* TimeSheetToApproveViewController.swift in Sources */,
+				5A3DF0D41DED52F10062B7C7 /* SlideMenuController.swift in Sources */,
 				5ABE93581DEC127900851382 /* Pappaya.xcdatamodeld in Sources */,
+				5AF121D61DF1565D005E22F2 /* TimeSheetDetailModel.swift in Sources */,
+				5A31DA901DEECDD8009592CC /* LandingViewController.swift in Sources */,
 				5ABE93501DEC127900851382 /* AppDelegate.swift in Sources */,
+				5A3DF0CA1DED51810062B7C7 /* UserSideMenuViewController.swift in Sources */,
+				5A8552661DEC59BD000C935E /* Constants.swift in Sources */,
+				5A3DF0D61DED94370062B7C7 /* SideMenuModel.swift in Sources */,
+				5A3DF0D91DED968F0062B7C7 /* LoginViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -507,6 +687,7 @@
 				5ABE93791DEC127A00851382 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		5ABE937A1DEC127A00851382 /* Build configuration list for PBXNativeTarget "PappayaTests" */ = {
 			isa = XCConfigurationList;
@@ -515,6 +696,7 @@
 				5ABE937C1DEC127A00851382 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		5ABE937D1DEC127A00851382 /* Build configuration list for PBXNativeTarget "PappayaUITests" */ = {
 			isa = XCConfigurationList;
@@ -523,6 +705,7 @@
 				5ABE937F1DEC127A00851382 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 

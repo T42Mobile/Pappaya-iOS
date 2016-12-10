@@ -14,9 +14,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-
+    var rootNavigationController : UINavigationController = UINavigationController()
+    var slideMenuController = SlideMenuController()
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        UINavigationBar.appearance().isTranslucent = false
+        UINavigationBar.appearance().barStyle = UIBarStyle.black
+        UINavigationBar.appearance().tintColor = UIColor.white
+        UINavigationBar.appearance().barTintColor = Constants.Color.GreenColor
+        
+        UIApplication.shared.statusBarStyle = UIStatusBarStyle.default
+        
+        setRootViewControllerForWindow(landingViewIdentifier: Constants.ViewControllerIdentifiers.LandingViewController)
+        
         return true
     }
 
