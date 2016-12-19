@@ -276,32 +276,66 @@ func getDisplayDate(fromDate : Date , toDate : Date) -> NSAttributedString
 
 func convertDateFromString(dateString : String , dateFormate : String) -> Date
 {
-    let dateFormatter = DateFormatter()
-    dateFormatter.dateFormat = dateFormate
+    let dateFormatter = getDateFormatterInFormat(formatString: dateFormate)
     if let date = dateFormatter.date(from: dateString)
     {
         return date
     }
-    return Date()
+    return Date().dateWithOutTime()
 }
 
 func getDisplayDateFromDateString(fromDate : String , toDate : String) -> NSAttributedString
 {
-    let dateFormat : String = "dd/MM/yyyy"
-    let fromDateObject = convertDateFromString(dateString: fromDate, dateFormate: dateFormat)
-    let toDateObject = convertDateFromString(dateString: toDate, dateFormate: dateFormat)
+    let fromDateObject = convertDateFromString(dateString: fromDate, dateFormate: Constants.DateConstants.DateFormatFromServer)
+    let toDateObject = convertDateFromString(dateString: toDate, dateFormate: Constants.DateConstants.DateFormatFromServer)
     return getDisplayDate(fromDate: fromDateObject, toDate: toDateObject)
 }
 
-//MARK:- Enum
-
-enum TimeSheetStatus : String
+func saveDetailsToUserDefault(detailDict : [String : AnyObject])
 {
-    case Open = "open"
-    case WaintingForApproval = "waiting"
-    case Approved = "approved"
-    case Rejected = "rejected"
+    UserDefaults.standard.setValuesForKeys(detailDict)
+    UserDefaults.standard.synchronize()
 }
+
+func getStringForKeyFromUserDefaults(key : String) -> String
+{
+    if let value = UserDefaults.standard.string(forKey: key)
+    {
+        return value
+    }
+    return ""
+}
+
+func getBoolValueForKey(key : String) -> Bool
+{
+    return UserDefaults.standard.bool(forKey: key)
+}
+
+func getDateFormatterInCommonFormat() -> DateFormatter
+{
+    return getDateFormatterInFormat(formatString: Constants.DateConstants.CommonDateFormat)
+}
+
+func getDateFormatterInFormat(formatString : String) ->DateFormatter
+{
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = formatString
+    dateFormatter.timeZone = Constants.DateConstants.CommonTimeZone
+    return dateFormatter
+}
+
+func convertDateFromServerString(dateString : String) -> Date
+{
+    return convertDateFromString(dateString: dateString, dateFormate: Constants.DateConstants.DateFormatFromServer)
+}
+
+func convertDateToString(date : Date , format : String) -> String
+{
+    let dateFormatter = getDateFormatterInFormat(formatString: format)
+    return dateFormatter.string(from: date)
+}
+
+
 
 
 

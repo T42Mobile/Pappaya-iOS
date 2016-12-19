@@ -26,16 +26,8 @@ class TimeSheetToApproveViewController: SlideDelegateViewController, UITableView
         
         // Do any additional setup after loading the view.
         
-        let timeSheetDetail = TimeSheetDetailModel()
-        timeSheetDetail.fromDate = "21/11/2016"
-        timeSheetDetail.toDate = "30/11/2016"
-        timeSheetDetail.totalHoursWorked = "30:30 hrs"
-        timeSheetDetail.status = TimeSheetStatus.Open
-        
-        timeSheetArray.append(timeSheetDetail)
-        //self.addLeftBarButtonWithImage(UIImage(named : "icon-menu")!)
+        self.timeSheetArray = TimeSheetBL.sharedInstance.timeSheetToApproveList
         self.tableView.estimatedRowHeight = 200
-
         
     }
     
@@ -65,6 +57,8 @@ class TimeSheetToApproveViewController: SlideDelegateViewController, UITableView
         
         cell.periodLabel.attributedText = getDisplayDateFromDateString(fromDate: timeSheetDetail.fromDate, toDate: timeSheetDetail.toDate)
         cell.totalHoursLabel.text = timeSheetDetail.totalHoursWorked
+        cell.employeeName.text = timeSheetDetail.employeeName
+        cell.projectNameLabel.text = TimeSheetBL.sharedInstance.convertArrayToString(projectList: timeSheetDetail.timeSheetProjectArray)
         
         return cell
     }

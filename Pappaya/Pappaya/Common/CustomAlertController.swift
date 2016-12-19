@@ -119,3 +119,13 @@ private extension UIAlertAction
         }
     }
 }
+
+extension Date
+{
+    func dateWithOutTime() -> Date
+    {
+        var calendar = Calendar(identifier: Calendar.Identifier.gregorian)
+        calendar.timeZone = Constants.DateConstants.CommonTimeZone
+        return calendar.startOfDay(for: self)
+    }
+}

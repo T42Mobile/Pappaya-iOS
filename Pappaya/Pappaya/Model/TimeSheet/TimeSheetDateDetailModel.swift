@@ -18,4 +18,18 @@ class TimeSheetDateDetailModel: NSObject
     var isBillable : String = ""
     var sheetId : Int = 0
     var projectId : Int = 0
+    
+    convenience init(dictionary : NSDictionary)
+    {
+        self.init()
+        
+        self.comment = dictionary["display_name"] as! String
+        let accountDetail : NSDictionary = dictionary["account_id"] as! NSDictionary
+        self.projectId = accountDetail["id"] as! Int
+        self.projectName = accountDetail["name"] as! String
+        self.hoursWorked = String(dictionary["unit_amount"] as! Double)
+        self.dateString = dictionary["date"] as! String
+        self.dateObject = convertDateFromString(dateString: self.dateString, dateFormate: Constants.DateConstants.DateFormatFromServer)
+        self.sheetId = dictionary["id"] as! Int
+    }
 }

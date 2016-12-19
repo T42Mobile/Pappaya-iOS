@@ -42,6 +42,9 @@ class NewTimesheetViewController: UIViewController, UITableViewDelegate, UITable
         
         tableView.tableFooterView = UIView(frame: CGRect.zero)
         self.addDoneButtonToTextField()
+       toDate = getDateWithIntervalFromDate(date: Date(), interval: 7)
+        setDateToTextField(date: fromDate, textField: fromDateTxtField)
+        setDateToTextField(date: toDate, textField: toDateTxtField)
         
     }
 
@@ -55,6 +58,11 @@ class NewTimesheetViewController: UIViewController, UITableViewDelegate, UITable
     {
         setShadowForView(tableView, cornerRadius : 5, shadowOpacity : 2.0)
         self.view.addSubview(tableView)
+    }
+    
+    override func viewWillAppear(_ animated: Bool)
+    {
+        self.navigationController!.navigationBar.topItem?.title = ""
     }
     //MARK:- Button Action
     @IBAction func nonBillableButtonClicked(_ sender: UIButton)
@@ -120,7 +128,14 @@ class NewTimesheetViewController: UIViewController, UITableViewDelegate, UITable
     func textFieldDidBeginEditing(_ textField: UITextField)
     {
         let datePickerView:UIDatePicker = UIDatePicker()
-        datePickerView.setDate(Date(), animated: false)
+        if textField.tag == 1
+        {
+            datePickerView.setDate(fromDate, animated: false)
+        }
+        else if textField.tag == 2
+        {
+            datePickerView.setDate(toDate, animated: false)
+        }
         datePickerView.tag = textField.tag
         datePickerView.datePickerMode = UIDatePickerMode.date
         textField.inputView = datePickerView
@@ -129,21 +144,15 @@ class NewTimesheetViewController: UIViewController, UITableViewDelegate, UITable
     
     func datePickerValueChanged(sender:UIDatePicker)
     {
-        let dateFormatter = DateFormatter()
-        
-        dateFormatter.dateStyle = DateFormatter.Style.medium
-        dateFormatter.timeStyle = DateFormatter.Style.none
-        let dateText = dateFormatter.string(from: sender.date)
-        
         if sender.tag == 1
         {
             fromDate = sender.date
-            fromDateTxtField.text = dateText
+            setDateToTextField(date: fromDate, textField: fromDateTxtField)
         }
         else if sender.tag == 2
         {
             toDate = sender.date
-            toDateTxtField.text = dateText
+            setDateToTextField(date: toDate, textField: toDateTxtField)
         }
     }
     
@@ -163,5 +172,47 @@ class NewTimesheetViewController: UIViewController, UITableViewDelegate, UITable
     {
         self.view.endEditing(true)
     }
-
+    
+    func getDateWithIntervalFromDate(date : Date, interval : Int) -> Date
+    {
+        let calender = Calendar(identifier: Calendar.Identifier.gregorian)
+        
+        if let intervalDate = calender.date(byAdding: Calendar.Component.day, value: interval, to: date)
+        {
+            return intervalDate
+        }
+        return date
+    }
+    
+    func setDateToTextField(date : Date , textField : UITextField)
+    {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = DateFormatter.Style.medium
+        dateFormatter.timeStyle = DateFormatter.Style.none
+        textField.text = dateFormatter.string(from: date)
+    }
+    
+    func getIntervalBetweenToDate(fromDate : Date, toDate : Date) -> DateComponents
+    {
+        let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
+        
+        let from = calendar.date(bySettingHour: 0, minute: 0, second: 0, of: fromDate)
+        let to = calendar.date(bySettingHour: 0, minute: 0, second: 0, of: toDate)
+        
+        return calendar.dateComponents([.day], from: from!, to: to!)
+    }
+    
+    @IBAction func saveButtonActionClicked(_ sender: UIBarButtonItem)
+    {
+        if getIntervalBetweenToDate(fromDate : fromDate , toDate : toDate).day! < 7
+        {
+            _ = CustomAlertController.alert(title: "Warning", message: "Please select atleast 7 days")
+        }
+        else 
+        {
+            print(TimeSheetBL.sharedInstance.checkTimeSheetOverLap(fromDate: fromDate, toDate: toDate))
+        }
+    }
+    
+    
 }

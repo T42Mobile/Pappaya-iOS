@@ -14,7 +14,7 @@ class TimesheetListTableViewCell: UITableViewCell
     @IBOutlet weak var periodLabel: UILabel!
     @IBOutlet weak var projectNameLabel: UILabel!
     @IBOutlet weak var totalHoursLabel: UILabel!
-    @IBOutlet weak var statusImageView: UIImageView!
+    @IBOutlet weak var statusButton: UIButton!
 
     override func awakeFromNib()
     {
@@ -32,9 +32,12 @@ class TimesheetListTableViewCell: UITableViewCell
     
     func setStatusImage(status : TimeSheetStatus)
     {
-        let imageDict : [String : String] = ["open" : "icon_open" , "waiting" : "icon_waiting" , "approved" : "icon_approved", "rejected" : "icon_rejected"]
+        let imageDict : [String : String] = [TimeSheetStatus.Open.rawValue : "icon_open" , TimeSheetStatus.WaitingForApproval.rawValue : "icon_waiting" , TimeSheetStatus.Approved.rawValue : "icon_approved", TimeSheetStatus.Rejected.rawValue : "icon_rejected"]
         
-        self.statusImageView.image = UIImage(named: imageDict[status.rawValue]!)
+        let titleDict : [String : String] = [TimeSheetStatus.Open.rawValue : "Open" , TimeSheetStatus.WaitingForApproval.rawValue : "Waiting Approval" , TimeSheetStatus.Approved.rawValue : "Approved", TimeSheetStatus.Rejected.rawValue : "Rejected"]
+        
+        self.statusButton.setImage(UIImage(named: imageDict[status.rawValue]!), for: UIControlState.normal)
+        self.statusButton.setTitle(titleDict[status.rawValue], for: UIControlState.normal)
     }
 
 }

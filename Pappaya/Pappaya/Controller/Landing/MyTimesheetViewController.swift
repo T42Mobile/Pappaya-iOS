@@ -26,19 +26,8 @@ class MyTimesheetViewController: SlideDelegateViewController, UITableViewDelegat
 
         // Do any additional setup after loading the view.
         
-        let timeSheetDetail = TimeSheetDetailModel()
-        timeSheetDetail.fromDate = "21/11/2016"
-        timeSheetDetail.toDate = "30/11/2016"
-        timeSheetDetail.totalHoursWorked = "30:30 hrs"
-        timeSheetDetail.status = TimeSheetStatus.Open
-        
-        timeSheetArray.append(timeSheetDetail)
-        
-        //self.addLeftBarButtonWithImage(UIImage(named : "icon-menu")!)
-        
+        self.timeSheetArray = TimeSheetBL.sharedInstance.myTimeSheetList
         self.tableView.estimatedRowHeight = 200
-
-        
     }
 
     override func didReceiveMemoryWarning()
@@ -65,8 +54,9 @@ class MyTimesheetViewController: SlideDelegateViewController, UITableViewDelegat
         
         let timeSheetDetail = timeSheetArray[indexPath.row]
         
-        cell.periodLabel.attributedText = getDisplayDateFromDateString(fromDate: timeSheetDetail.fromDate, toDate: timeSheetDetail.toDate)
+        cell.periodLabel.attributedText = getDisplayDate(fromDate: timeSheetDetail.fromDateObject, toDate: timeSheetDetail.toDateObject)
         cell.totalHoursLabel.text = timeSheetDetail.totalHoursWorked
+        cell.projectNameLabel.text = TimeSheetBL.sharedInstance.convertArrayToString(projectList: timeSheetDetail.timeSheetProjectArray)
         cell.setStatusImage(status: timeSheetDetail.status)
         
         return cell

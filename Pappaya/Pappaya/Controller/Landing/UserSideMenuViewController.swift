@@ -29,7 +29,20 @@ class UserSideMenuViewController: UIViewController, UITableViewDelegate, UITable
     {
         super.viewDidLoad()
         
-        menuDataList = [[SideMenuModel.init(imageName : "icon_Pencil" , detailText : "View and Edit Profile")],[SideMenuModel.init(imageName : "icon_Stats" , detailText : "Weekly"), SideMenuModel.init(imageName : "icon_Review" , detailText : "My timesheet"), SideMenuModel.init(imageName : "icon_History" , detailText : "Timesheet to approve")]]
+        menuDataList = [
+            [SideMenuModel.init(imageName : "icon_Stats" , detailText : "Weekly"), SideMenuModel.init(imageName : "icon_Review" , detailText : "My timesheet")
+            ],
+            [SideMenuModel.init(imageName : "icon_Stats" , detailText : "Logout")
+            ]
+        ]
+        
+        if getBoolValueForKey(key: Constants.UserDefaultsKey.IsManager)
+        {
+           menuDataList[0].append(SideMenuModel.init(imageName : "icon_History" , detailText : "Timesheet to approve"))
+        }
+        
+        TimeSheetBL.sharedInstance.sampleDemoData()
+        
         
         // Do any additional setup after loading the view.
     }
@@ -69,7 +82,7 @@ class UserSideMenuViewController: UIViewController, UITableViewDelegate, UITable
         if previouslySelectedIndex != indexPath
         {
             previouslySelectedIndex = indexPath
-            if indexPath.section == 1
+            if indexPath.section == 0
             {
                 var identifier : String = ""
                 switch indexPath.row
@@ -97,20 +110,7 @@ class UserSideMenuViewController: UIViewController, UITableViewDelegate, UITable
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat
     {
-        if section == 0
-        {
-            return 0
-        }
         return 44
-    }
-    
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat
-    {
-        if section == 0
-        {
-            return 1
-        }
-        return 0
     }
     
     
@@ -119,25 +119,18 @@ class UserSideMenuViewController: UIViewController, UITableViewDelegate, UITable
         return 50
     }
     
-    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView?
-    {
-        if section == 0
-        {
-            let view = UIView(frame: CGRect(x: 0,y: 0,width: tableView.frame.width,height: 1))
-            view.backgroundColor = getUIColorForRGB(201, green: 201, blue: 201)
-            return view
-        }
-        return nil
-    }
-    
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView?
     {
-        if section == 1
-        {
+        
             let cell = tableView.dequeueReusableCell(withIdentifier: Constants.TableViewCellIdentifier.MenuSectionCell) as! MenuSectionTableViewCell
+        if section == 0
+        {
             cell.sectionLabel.text = "Timesheets"
-            return cell.contentView
         }
-        return nil
+        else if section == 1
+        {
+            cell.sectionLabel.text = "General Setting"
+        }
+        return cell.contentView
     }
 }

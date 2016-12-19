@@ -14,6 +14,9 @@ class LandingViewController: SlideDelegateViewController, UITableViewDelegate , 
     //MARK:-- Outlet
     @IBOutlet weak var tableView : UITableView!
     @IBOutlet weak var emptyStateView: UIView!
+    @IBOutlet weak var createBtn: UIButton!
+    @IBOutlet weak var timeLabel: UILabel!
+    @IBOutlet weak var totalHoursLabel: UILabel!
     
     //MARK:-- Class
     var timeSheetDetail : TimeSheetDetailModel = TimeSheetDetailModel()
@@ -23,49 +26,27 @@ class LandingViewController: SlideDelegateViewController, UITableViewDelegate , 
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        self.tableView.estimatedRowHeight = 300
-        
-        let projectDetail : TimeSheetProjectDetailModel = TimeSheetProjectDetailModel()
-        projectDetail.projectName = "Android Project"
-        projectDetail.isBillable = "Billable"
-        
-        let dateDetail : TimeSheetDateDetailModel = TimeSheetDateDetailModel()
-        dateDetail.dateString = "21/11/2016"
-        dateDetail.comment = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras nec metus vel mauris volutpat sodales."
-        dateDetail.hoursWorked = "6 hrs"
-        
-        let dateDetail1 : TimeSheetDateDetailModel = TimeSheetDateDetailModel()
-        dateDetail1.dateString = "22/11/2016"
-        dateDetail1.comment = "Suspendisse erat est, maximus ut ipsum nec, imperdiet laoreet lectus. Ut condimentum tempus ipsum vel dapibus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Fusce auctor vulputate nunc sit amet pulvinar. Aliquam erat volutpat. Integer semper metus eget eros elementum mollis. Aenean orci orci, interdum laoreet suscipit quis, fermentum id diam."
-        dateDetail1.hoursWorked = "08:30 hrs"
-        
-        let dateDetail2 : TimeSheetDateDetailModel = TimeSheetDateDetailModel()
-        dateDetail2.dateString = "22/11/2016"
-        dateDetail2.comment = "Suspendisse erat est, maximus ut ipsum nec, imperdiet laoreet lectus. Ut condimentum tempus ipsum vel dapibus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Fusce auctor vulputate nunc sit amet pulvinar. Aliquam erat volutpat."
-        dateDetail2.hoursWorked = "07:30 hrs"
-        
-        projectDetail.timeSheetDateDetailArray.append(dateDetail)
-        projectDetail.timeSheetDateDetailArray.append(dateDetail1)
-        projectDetail.timeSheetDateDetailArray.append(dateDetail2)
-        
-        timeSheetDetail.timeSheetProjectArray.append(projectDetail)
         
         // Do any additional setup after loading the view.
         
-        //self.addLeftBarButtonWithImage(UIImage(named : "icon-menu")!)
+        setCornerRadiusForView(createBtn, cornerRadius: 5)
+        self.tableView.estimatedRowHeight = 300
         
+        if let timeSheetDetailModel = TimeSheetBL.sharedInstance.getCurrentWeekTimeSheet()
+        {
+            self.setTimeSheetDetail(timeSheetDetail:timeSheetDetailModel)
+            emptyStateView.isHidden = true
+        }
+        else
+        {
+            emptyStateView.isHidden = false
+        }
     }
 
     override func didReceiveMemoryWarning()
     {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
-    }
-    
-    override func viewWillLayoutSubviews()
-    {
-        //self.tableView.reloadData()
-        
     }
     
     //MARK:- Table View data source
@@ -91,6 +72,7 @@ class LandingViewController: SlideDelegateViewController, UITableViewDelegate , 
     {
         let sectionView = tableView.dequeueReusableCell(withIdentifier: Constants.TableViewCellIdentifier.TimeSheetSectionCell) as! TimeSheetSectionCell
         
+        
         return sectionView.contentView
     }
     
@@ -111,7 +93,7 @@ class LandingViewController: SlideDelegateViewController, UITableViewDelegate , 
         return cell
     }
     
-    //MARK:-- Date conversion Function
+    //MARK:- Date conversion Function
     
     fileprivate func getDisplayDate(dateObject : Date) -> NSAttributedString
     {
@@ -131,6 +113,16 @@ class LandingViewController: SlideDelegateViewController, UITableViewDelegate , 
         attributedString.append(NSAttributedString(string: dateFormatter.string(from: dateObject), attributes: [ NSFontAttributeName: UIFont.systemFont(ofSize: 13) ]))
         
         return attributedString
+    }
+    
+    //MARK:- Private function 
+    
+    private func setTimeSheetDetail(timeSheetDetail : TimeSheetDetailModel)
+    {
+        self.timeSheetDetail = timeSheetDetail
+        self.timeLabel.text = convertDateToString(date: self.timeSheetDetail.fromDateObject, format: Constants.DateConstants.CommonDateFormat) + " To " + convertDateToString(date: self.timeSheetDetail.toDateObject, format: Constants.DateConstants.CommonDateFormat)
+        self.totalHoursLabel.text = self.timeSheetDetail.totalHoursWorked + " Hrs"
+        self.tableView.reloadData()
     }
     
 }

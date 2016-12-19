@@ -60,6 +60,17 @@ class LoginViewController: UIViewController , UITextFieldDelegate
         else
         {
             self.view.endEditing(true)
+            ServiceHelper.authendicateLogin(userName: userNameTxtFld.text!, password: passwordTxtFld.text!, completionHandler: { (detailDict, error) -> Void in
+                if let dict = detailDict
+                {
+                    saveDetailsToUserDefault(detailDict: dict as! [String : AnyObject])
+                    setRootViewControllerForWindow(landingViewIdentifier: Constants.ViewControllerIdentifiers.LandingViewController)
+                }
+                else
+                {
+                    _ = CustomAlertController.alert(title: "Alert", message: error!.localizedDescription)
+                }
+            })
         }
     }
     

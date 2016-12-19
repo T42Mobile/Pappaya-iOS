@@ -12,6 +12,7 @@ class TimeSheetProjectDetailModel: NSObject
 {
     var projectName : String = ""
     var projectId : Int = 0
-    var isBillable : String = ""
+    var isBillable : BillableStatus =  BillableStatus.Billable
+    var timeSheetId : Int = 0
     var timeSheetDateDetailArray : [TimeSheetDateDetailModel] = []
 }

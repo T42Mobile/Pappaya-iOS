@@ -45,4 +45,35 @@ struct Constants
         static let GreenColor = getUIColorForRGB(26, green: 127, blue: 64)
     }
     
+    struct UserDefaultsKey
+    {
+        static let UserFirstName : String = "userFirstName"
+        static let UserLastName : String = "userLastName"
+        static let IsManager : String = "isManager"
+    }
+    
+    struct DateConstants
+    {
+        static let DateFormatFromServer : String = "yyyy-MM-dd"
+        static let CommonDateFormat : String = "dd MMM, yyyy"
+        static let CommonTimeZone : TimeZone = TimeZone.init(secondsFromGMT: 0)!
+    }
+    
 }
+
+//MARK:- Enum
+
+enum TimeSheetStatus : String
+{
+    case Open = "draft"
+    case WaitingForApproval = "confirm"
+    case Approved = "done"
+    case Rejected = "rejected"
+}
+
+enum BillableStatus : String
+{
+    case Billable = "Billable"
+    case Non_Billable = "Non-Billable"
+}
+
