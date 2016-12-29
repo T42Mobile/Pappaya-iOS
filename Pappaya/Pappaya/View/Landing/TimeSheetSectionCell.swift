@@ -10,6 +10,9 @@ import UIKit
 
 class TimeSheetSectionCell: UITableViewCell
 {
+    @IBOutlet weak var projectLabel: UILabel!
+    @IBOutlet weak var billableLabel: UILabel!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

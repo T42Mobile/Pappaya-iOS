@@ -129,3 +129,12 @@ extension Date
         return calendar.startOfDay(for: self)
     }
 }
+
+class RoundCornerButton : UIButton
+{
+    override func awakeFromNib()
+    {
+        setCornerRadiusForView(self, cornerRadius: 5)
+    }
+    
+}

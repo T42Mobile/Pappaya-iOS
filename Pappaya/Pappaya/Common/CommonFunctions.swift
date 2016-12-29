@@ -291,7 +291,7 @@ func getDisplayDateFromDateString(fromDate : String , toDate : String) -> NSAttr
     return getDisplayDate(fromDate: fromDateObject, toDate: toDateObject)
 }
 
-func saveDetailsToUserDefault(detailDict : [String : AnyObject])
+func saveDetailsToUserDefault(detailDict : [String : Any])
 {
     UserDefaults.standard.setValuesForKeys(detailDict)
     UserDefaults.standard.synchronize()
@@ -305,6 +305,7 @@ func getStringForKeyFromUserDefaults(key : String) -> String
     }
     return ""
 }
+
 
 func getBoolValueForKey(key : String) -> Bool
 {
@@ -333,6 +334,15 @@ func convertDateToString(date : Date , format : String) -> String
 {
     let dateFormatter = getDateFormatterInFormat(formatString: format)
     return dateFormatter.string(from: date)
+}
+
+func checkInternetConnection() -> Bool
+{
+    if let reachabilityStatus = Reachability()?.isReachable
+    {
+        return reachabilityStatus
+    }
+    return false
 }
 
 

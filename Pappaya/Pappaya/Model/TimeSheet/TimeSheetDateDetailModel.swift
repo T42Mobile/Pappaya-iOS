@@ -11,8 +11,8 @@ import UIKit
 class TimeSheetDateDetailModel: NSObject
 {
     var dateString : String = ""
-    var dateObject : Date = Date()
-    var hoursWorked : String = ""
+    var dateObject : Date = Date().dateWithOutTime()
+    var hoursWorked : String = "08:00"
     var comment : String = ""
     var projectName : String = ""
     var isBillable : String = ""
@@ -32,4 +32,19 @@ class TimeSheetDateDetailModel: NSObject
         self.dateObject = convertDateFromString(dateString: self.dateString, dateFormate: Constants.DateConstants.DateFormatFromServer)
         self.sheetId = dictionary["id"] as! Int
     }
+}
+
+class TimeSheetDateModel
+{
+    var dateString : String = ""
+    var dateObject : Date = Date().dateWithOutTime()
+    var hoursWorked : Double = 8.00
+    var comment : String = ""
+    var projectName : String = ""
+    var isBillable : BillableStatus = BillableStatus.Billable
+    var sheetId : Int = 0
+    var projectId : Int = 0
+    var timeSheetId : Int = 0
+    var is_timeSheet : Bool = true
+
 }

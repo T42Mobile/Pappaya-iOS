@@ -7,8 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5A092F9D1E0F281A0062B2D4 /* CustomActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A092F9C1E0F281A0062B2D4 /* CustomActivityIndicator.swift */; };
 		5A18092D1E02661100F1FB2A /* ServiceHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A18092C1E02661100F1FB2A /* ServiceHelper.swift */; };
+		5A1DECEB1E13E54000C63554 /* TimeSheetDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A1DECEA1E13E54000C63554 /* TimeSheetDetailViewController.swift */; };
 		5A31DA901DEECDD8009592CC /* LandingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A31DA8F1DEECDD8009592CC /* LandingViewController.swift */; };
+		5A36FD801E1382F90006DB09 /* DataBaseBL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A36FD7E1E1382F90006DB09 /* DataBaseBL.swift */; };
+		5A36FD811E1382F90006DB09 /* DataBaseHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A36FD7F1E1382F90006DB09 /* DataBaseHelper.swift */; };
+		5A38B6521E08FC8200BB5645 /* AddTimeSheetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A38B6511E08FC8200BB5645 /* AddTimeSheetViewController.swift */; };
 		5A3DF0CA1DED51810062B7C7 /* UserSideMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A3DF0C81DED51810062B7C7 /* UserSideMenuViewController.swift */; };
 		5A3DF0D21DED52F10062B7C7 /* MenuSectionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A3DF0CE1DED52F10062B7C7 /* MenuSectionTableViewCell.swift */; };
 		5A3DF0D31DED52F10062B7C7 /* MenuTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A3DF0CF1DED52F10062B7C7 /* MenuTableViewCell.swift */; };
@@ -20,6 +25,7 @@
 		5A8552651DEC59BD000C935E /* CommonFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A8552621DEC59BD000C935E /* CommonFunctions.swift */; };
 		5A8552661DEC59BD000C935E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A8552631DEC59BD000C935E /* Constants.swift */; };
 		5A8552671DEC59BD000C935E /* CustomAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A8552641DEC59BD000C935E /* CustomAlertController.swift */; };
+		5A90CB321E0D0E9700F87BFC /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A90CB311E0D0E9700F87BFC /* Reachability.swift */; };
 		5ABE93501DEC127900851382 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ABE934F1DEC127900851382 /* AppDelegate.swift */; };
 		5ABE93551DEC127900851382 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5ABE93531DEC127900851382 /* Main.storyboard */; };
 		5ABE93581DEC127900851382 /* Pappaya.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5ABE93561DEC127900851382 /* Pappaya.xcdatamodeld */; };
@@ -58,8 +64,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5A092F9C1E0F281A0062B2D4 /* CustomActivityIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CustomActivityIndicator.swift; path = Common/CustomActivityIndicator.swift; sourceTree = "<group>"; };
 		5A18092C1E02661100F1FB2A /* ServiceHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ServiceHelper.swift; path = Common/ServiceHelper.swift; sourceTree = "<group>"; };
+		5A1DECEA1E13E54000C63554 /* TimeSheetDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TimeSheetDetailViewController.swift; path = Controller/Landing/TimeSheetDetailViewController.swift; sourceTree = "<group>"; };
 		5A31DA8F1DEECDD8009592CC /* LandingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LandingViewController.swift; path = Controller/Landing/LandingViewController.swift; sourceTree = "<group>"; };
+		5A36FD7E1E1382F90006DB09 /* DataBaseBL.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataBaseBL.swift; path = Common/DataBase/DataBaseBL.swift; sourceTree = "<group>"; };
+		5A36FD7F1E1382F90006DB09 /* DataBaseHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataBaseHelper.swift; path = Common/DataBase/DataBaseHelper.swift; sourceTree = "<group>"; };
+		5A38B6511E08FC8200BB5645 /* AddTimeSheetViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AddTimeSheetViewController.swift; path = "Controller/New timesheet/AddTimeSheetViewController.swift"; sourceTree = "<group>"; };
 		5A3DF0C81DED51810062B7C7 /* UserSideMenuViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UserSideMenuViewController.swift; path = Controller/Landing/UserSideMenuViewController.swift; sourceTree = "<group>"; };
 		5A3DF0CE1DED52F10062B7C7 /* MenuSectionTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MenuSectionTableViewCell.swift; path = "LibraryFiles/Side Menu/MenuSectionTableViewCell.swift"; sourceTree = "<group>"; };
 		5A3DF0CF1DED52F10062B7C7 /* MenuTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MenuTableViewCell.swift; path = "LibraryFiles/Side Menu/MenuTableViewCell.swift"; sourceTree = "<group>"; };
@@ -71,6 +82,7 @@
 		5A8552621DEC59BD000C935E /* CommonFunctions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CommonFunctions.swift; path = Common/CommonFunctions.swift; sourceTree = "<group>"; };
 		5A8552631DEC59BD000C935E /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Constants.swift; path = Common/Constants.swift; sourceTree = "<group>"; };
 		5A8552641DEC59BD000C935E /* CustomAlertController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CustomAlertController.swift; path = Common/CustomAlertController.swift; sourceTree = "<group>"; };
+		5A90CB311E0D0E9700F87BFC /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Reachability.swift; path = Common/Reachability.swift; sourceTree = "<group>"; };
 		5ABE934C1DEC127900851382 /* Pappaya.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pappaya.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5ABE934F1DEC127900851382 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5ABE93541DEC127900851382 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -122,6 +134,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5A36FD7D1E1382D90006DB09 /* Data Base */ = {
+			isa = PBXGroup;
+			children = (
+				5A36FD7E1E1382F90006DB09 /* DataBaseBL.swift */,
+				5A36FD7F1E1382F90006DB09 /* DataBaseHelper.swift */,
+			);
+			name = "Data Base";
+			sourceTree = "<group>";
+		};
 		5A3DF0C61DED51590062B7C7 /* Landing */ = {
 			isa = PBXGroup;
 			children = (
@@ -129,6 +150,7 @@
 				5A31DA8F1DEECDD8009592CC /* LandingViewController.swift */,
 				5AF121DB1DF199C4005E22F2 /* MyTimesheetViewController.swift */,
 				5AF121DD1DF199EB005E22F2 /* TimeSheetToApproveViewController.swift */,
+				5A1DECEA1E13E54000C63554 /* TimeSheetDetailViewController.swift */,
 			);
 			name = Landing;
 			sourceTree = "<group>";
@@ -174,9 +196,12 @@
 			isa = PBXGroup;
 			children = (
 				5A8552621DEC59BD000C935E /* CommonFunctions.swift */,
+				5A36FD7D1E1382D90006DB09 /* Data Base */,
 				5AF121E11DF1B0F6005E22F2 /* SlideDelegateViewController.swift */,
+				5A90CB311E0D0E9700F87BFC /* Reachability.swift */,
 				5A8552631DEC59BD000C935E /* Constants.swift */,
 				5A8552641DEC59BD000C935E /* CustomAlertController.swift */,
+				5A092F9C1E0F281A0062B2D4 /* CustomActivityIndicator.swift */,
 				5A18092C1E02661100F1FB2A /* ServiceHelper.swift */,
 			);
 			name = Common;
@@ -268,6 +293,7 @@
 			isa = PBXGroup;
 			children = (
 				5AEB0F1A1DF5B98B005B7481 /* NewTimesheetViewController.swift */,
+				5A38B6511E08FC8200BB5645 /* AddTimeSheetViewController.swift */,
 			);
 			name = "New timesheet";
 			sourceTree = "<group>";
@@ -430,10 +456,13 @@
 				5A3DF0D21DED52F10062B7C7 /* MenuSectionTableViewCell.swift in Sources */,
 				5AF121DA1DF179F3005E22F2 /* TimeSheetProjectDetailModel.swift in Sources */,
 				5AF121E01DF1A314005E22F2 /* TimesheetListTableViewCell.swift in Sources */,
+				5A36FD811E1382F90006DB09 /* DataBaseHelper.swift in Sources */,
 				5AF121E21DF1B0F6005E22F2 /* SlideDelegateViewController.swift in Sources */,
 				5AF121D81DF156B0005E22F2 /* TimeSheetDateDetailModel.swift in Sources */,
 				5A8552671DEC59BD000C935E /* CustomAlertController.swift in Sources */,
+				5A36FD801E1382F90006DB09 /* DataBaseBL.swift in Sources */,
 				5AF121D31DF154B5005E22F2 /* TimeSheetSectionCell.swift in Sources */,
+				5A90CB321E0D0E9700F87BFC /* Reachability.swift in Sources */,
 				5A8552651DEC59BD000C935E /* CommonFunctions.swift in Sources */,
 				5AEB0F1B1DF5B98B005B7481 /* NewTimesheetViewController.swift in Sources */,
 				5AF121D11DF15492005E22F2 /* TimeSheetDateCell.swift in Sources */,
@@ -441,11 +470,14 @@
 				5A3DF0DE1DED9EB80062B7C7 /* FloatLabelTextView.swift in Sources */,
 				5A3DF0DD1DED9EB80062B7C7 /* FloatLabelTextField.swift in Sources */,
 				5A3DF0D31DED52F10062B7C7 /* MenuTableViewCell.swift in Sources */,
+				5A38B6521E08FC8200BB5645 /* AddTimeSheetViewController.swift in Sources */,
+				5A092F9D1E0F281A0062B2D4 /* CustomActivityIndicator.swift in Sources */,
 				5AF121DE1DF199EB005E22F2 /* TimeSheetToApproveViewController.swift in Sources */,
 				5A18092D1E02661100F1FB2A /* ServiceHelper.swift in Sources */,
 				5A3DF0D41DED52F10062B7C7 /* SlideMenuController.swift in Sources */,
 				5ABE93581DEC127900851382 /* Pappaya.xcdatamodeld in Sources */,
 				5AE79EFE1E0514A400BAAD21 /* TimeSheetBL.swift in Sources */,
+				5A1DECEB1E13E54000C63554 /* TimeSheetDetailViewController.swift in Sources */,
 				5AF121D61DF1565D005E22F2 /* TimeSheetDetailModel.swift in Sources */,
 				5A31DA901DEECDD8009592CC /* LandingViewController.swift in Sources */,
 				5ABE93501DEC127900851382 /* AppDelegate.swift in Sources */,
@@ -528,6 +560,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -577,6 +610,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -602,9 +636,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = Pappaya/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = Think42labs.Pappaya;
+				PRODUCT_BUNDLE_IDENTIFIER = com.Pappaya.PRMS;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -614,9 +649,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = Pappaya/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = Think42labs.Pappaya;
+				PRODUCT_BUNDLE_IDENTIFIER = com.Pappaya.PRMS;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};

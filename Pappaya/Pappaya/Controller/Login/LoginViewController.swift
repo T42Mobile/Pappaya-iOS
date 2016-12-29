@@ -14,6 +14,7 @@ class LoginViewController: UIViewController , UITextFieldDelegate
     //MARK:-- Outlet
     @IBOutlet weak var userNameTxtFld: UITextField!
     @IBOutlet weak var passwordTxtFld: UITextField!
+    @IBOutlet weak var hostNameTxtFld: UITextField!
     @IBOutlet weak var loginButton: UIButton!
     
     //MARK:-- Class
@@ -38,14 +39,21 @@ class LoginViewController: UIViewController , UITextFieldDelegate
         super.viewDidLayoutSubviews()
         setCornerRadiusForView(self.loginButton, cornerRadius: 5)
         self.bindToKeyboard()
-        self.userNameTxtFld.text = "a"
-        self.passwordTxtFld.text = "a"
+        self.hostNameTxtFld.text = "SIT"
+        self.userNameTxtFld.text = "senthil@think42labs.com"
+        self.passwordTxtFld.text = "pappaya"
     }
     
     //MARK:- Button Action
     @IBAction func loginButtonAction(_ sender: UIButton)
     {
-        if userNameTxtFld.text?.characters.count == 0
+        if hostNameTxtFld.text?.characters.count == 0
+        {
+            let _ = CustomAlertController.alert(title: "Warning", message: "Enter Host name", acceptMessage: "OK", acceptBlock: {
+                self.hostNameTxtFld.becomeFirstResponder()
+            })
+        }
+        else if userNameTxtFld.text?.characters.count == 0
         {
             let _ = CustomAlertController.alert(title: "Warning", message: "Enter User name", acceptMessage: "OK", acceptBlock: {
                 self.userNameTxtFld.becomeFirstResponder()
@@ -60,11 +68,22 @@ class LoginViewController: UIViewController , UITextFieldDelegate
         else
         {
             self.view.endEditing(true)
-            ServiceHelper.authendicateLogin(userName: userNameTxtFld.text!, password: passwordTxtFld.text!, completionHandler: { (detailDict, error) -> Void in
+            CustomActivityIndicator.shared.showProgressView()
+            ServiceHelper.sharedInstance.authendicateLogin(userName: userNameTxtFld.text!, password: passwordTxtFld.text!,dbName : hostNameTxtFld.text!, completionHandler: { (detailDict, error) -> Void in
+                
+                CustomActivityIndicator.shared.hideProgressView()
                 if let dict = detailDict
                 {
-                    saveDetailsToUserDefault(detailDict: dict as! [String : AnyObject])
-                    setRootViewControllerForWindow(landingViewIdentifier: Constants.ViewControllerIdentifiers.LandingViewController)
+                    let status = dict["status"] as! Int
+                    if status == 200
+                    {
+                        self.saveLoginDetail(employeeDetail : dict)
+                        setRootViewControllerForWindow(landingViewIdentifier: Constants.ViewControllerIdentifiers.LandingViewController)
+                    }
+                    else
+                    {
+                        _ = CustomAlertController.alert(title: "Alert", message: dict["message"] as! String)
+                    }
                 }
                 else
                 {
@@ -119,5 +138,27 @@ class LoginViewController: UIViewController , UITextFieldDelegate
                 self.view.frame.origin.y = targetFrame.origin.y - bottomView
             },completion: nil)
         }
+    }
+    
+    private func saveLoginDetail(employeeDetail : NSDictionary)
+    {
+        let detail = employeeDetail["detail"] as! [String : Any]
+        var detailDict : [String : Any] = [
+            Constants.UserDefaultsKey.DBName : self.hostNameTxtFld.text!,
+            Constants.UserDefaultsKey.UserName : self.userNameTxtFld.text!,
+            Constants.UserDefaultsKey.Password : self.passwordTxtFld.text!,
+            Constants.UserDefaultsKey.IsManager : employeeDetail["manager"] as! Bool,
+            Constants.UserDefaultsKey.UserFirstName : detail["first_name"] as! String,
+            Constants.UserDefaultsKey.UserLastName : detail["last_name"] as! String,
+            Constants.UserDefaultsKey.UserId : detail["user_id"] as! Int
+        ]
+        if let imageString = detail["image"] as? String
+        {
+            if let imageData = Data(base64Encoded: imageString, options: .ignoreUnknownCharacters)
+            {
+                detailDict[Constants.UserDefaultsKey.UserImage] = imageData
+            }
+        }
+        saveDetailsToUserDefault(detailDict: detailDict)
     }
 }

@@ -11,8 +11,9 @@ import CoreData
 
 enum EntityName : String
 {
-    case Orphanage
-    case NewEntity
+    case TimeSheetDateTable
+    case TimeSheetTable
+    case TimeSheetProjectTable
 }
 
 class DataBaseBL: NSObject
@@ -28,10 +29,10 @@ class DataBaseBL: NSObject
      Insert new data in given table with key value dict.
      
      - Parameter tableName : EntityName - entity name where data to be inserted
-     - Parameter dataDict : [String : AnyObject] - dict of key and value to be inserted
+     - Parameter dataDict : [String : Any] - dict of key and value to be inserted
      */
     
-    func insertListOfDataInTable(tableName : EntityName, dataDictList : [[String : AnyObject]])
+    func insertListOfDataInTable(tableName : EntityName, dataDictList : [[String : Any]])
     {
         for dataDict in dataDictList
         {
@@ -43,10 +44,10 @@ class DataBaseBL: NSObject
      Insert new data in given table with key value dict.
      
      - Parameter tableName : EntityName - entity name where data to be inserted
-     - Parameter dataDict : [String : AnyObject] - dict of key and value to be inserted
+     - Parameter dataDict : [String : Any] - dict of key and value to be inserted
      */
     
-    func insertDataInTable(tableName : EntityName, dataDict : [String : AnyObject])
+    func insertDataInTable(tableName : EntityName, dataDict : [String : Any])
     {
         if dataDict.count > 0
         {
@@ -66,10 +67,12 @@ class DataBaseBL: NSObject
      - Returns [AnyObject] - array of available managedObjects
      */
     
-    func getAllObjectsFromTable(tableName : EntityName) -> [NSManagedObject]
+    func getAllObjectsFromTable(tableName : EntityName , sortDescriptors : [NSSortDescriptor]) -> [NSManagedObject]
     {
-        return self.getObjectsFromTable(tableName: tableName, predicate: nil)
+        return self.getObjectsFromTable(tableName: tableName, predicate: nil, sortDescriptors:sortDescriptors)
     }
+    
+    
     
     /**
      Get selective datas available in given Table name for particular details (NSPredicate)
@@ -79,10 +82,11 @@ class DataBaseBL: NSObject
      - Returns [AnyObject] - array of available managedObjects
      */
     
-    func getObjectsFromTable(tableName : EntityName , predicate : NSPredicate?) -> [NSManagedObject]
+    func getObjectsFromTable(tableName : EntityName , predicate : NSPredicate? , sortDescriptors : [NSSortDescriptor]) -> [NSManagedObject]
     {
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: tableName.rawValue)
         fetchRequest.predicate = predicate
+        fetchRequest.sortDescriptors = sortDescriptors
         
         do {
             let fetchedEmployees = try managedObjectContext.fetch(fetchRequest) as! [NSManagedObject]
@@ -136,10 +140,10 @@ class DataBaseBL: NSObject
      Update given data in Table name with custom predicate
      
      - Parameter tableName : EntityName - entity name where data available
-     - Parameter dataDict : [String : AnyObject] - Data to be updated
+     - Parameter dataDict : [String : Any] - Data to be updated
      */
     
-    func updateAllRowsInTable(tableName : EntityName , dataDict : [String : AnyObject] )
+    func updateAllRowsInTable(tableName : EntityName , dataDict : [String : Any] )
     {
         self.updateRowsInTable(tableName: tableName, dataDict: dataDict, predicate: nil)
     }
@@ -148,11 +152,11 @@ class DataBaseBL: NSObject
      Update given data in Table name with custom predicate
      
      - Parameter tableName : EntityName - entity name where data available
-     - Parameter dataDict : [String : AnyObject] - Data to be updated
+     - Parameter dataDict : [String : Any] - Data to be updated
      - Parameter predicate : NSPredicate? - to fetch desired predicate data
      */
     
-    func updateRowsInTable(tableName : EntityName , dataDict : [String : AnyObject] , predicate : NSPredicate?)
+    func updateRowsInTable(tableName : EntityName , dataDict : [String : Any] , predicate : NSPredicate?)
     {
         let batchUpdateRequest = NSBatchUpdateRequest(entityName: tableName.rawValue)
         batchUpdateRequest.predicate = predicate
@@ -182,7 +186,7 @@ class DataBaseBL: NSObject
     
     func checkIfDataAvailableInTable(tableName : EntityName , predicate : NSPredicate?) -> Bool
     {
-        if self.getObjectsFromTable(tableName: tableName, predicate: predicate).count > 0
+        if self.getObjectsFromTable(tableName: tableName, predicate: predicate, sortDescriptors : []).count > 0
         {
             return true
         }

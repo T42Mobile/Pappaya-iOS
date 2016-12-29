@@ -18,7 +18,7 @@ class MyTimesheetViewController: SlideDelegateViewController, UITableViewDelegat
     
     //MARK:-- Class
     
-    var timeSheetArray : [TimeSheetDetailModel] = []
+    var timeSheetArray : [TimeSheetListModel] = []
     
     override func viewDidLoad()
     {
@@ -26,7 +26,6 @@ class MyTimesheetViewController: SlideDelegateViewController, UITableViewDelegat
 
         // Do any additional setup after loading the view.
         
-        self.timeSheetArray = TimeSheetBL.sharedInstance.myTimeSheetList
         self.tableView.estimatedRowHeight = 200
     }
 
@@ -34,6 +33,13 @@ class MyTimesheetViewController: SlideDelegateViewController, UITableViewDelegat
     {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    override func viewWillAppear(_ animated: Bool)
+    {
+        self.timeSheetArray = TimeSheetBL.sharedInstance.getMyTimeSheetList()
+        
+        self.tableView.reloadData()
     }
     
     //MARK:- Table view
@@ -55,14 +61,27 @@ class MyTimesheetViewController: SlideDelegateViewController, UITableViewDelegat
         let timeSheetDetail = timeSheetArray[indexPath.row]
         
         cell.periodLabel.attributedText = getDisplayDate(fromDate: timeSheetDetail.fromDateObject, toDate: timeSheetDetail.toDateObject)
-        cell.totalHoursLabel.text = timeSheetDetail.totalHoursWorked
-        cell.projectNameLabel.text = TimeSheetBL.sharedInstance.convertArrayToString(projectList: timeSheetDetail.timeSheetProjectArray)
+        cell.totalHoursLabel.text = String(timeSheetDetail.totalHoursWorked) + " Hrs"
+        cell.projectNameLabel.text = timeSheetDetail.listOfProjectName
         cell.setStatusImage(status: timeSheetDetail.status)
         
         return cell
     }
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
     {
         return UITableViewAutomaticDimension
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
+    {
+        let timeSheetDetail = timeSheetArray[indexPath.row]
+        
+        let mainStoryBoard = UIStoryboard(name: Constants.StoryBoardIdentifiers.Main, bundle: nil)
+        let timeSheetDetailVC = mainStoryBoard.instantiateViewController(withIdentifier: Constants.ViewControllerIdentifiers.TimeSheetDetailViewController) as! TimeSheetDetailViewController
+        timeSheetDetailVC.timeSheetDetail = timeSheetDetail
+        timeSheetDetailVC.timeSheetDateList = TimeSheetBL.sharedInstance.getTimeSheetDateListForTimeSheetId(timeSheetId: timeSheetDetail.timeSheetId)
+        self.navigationController?.pushViewController(timeSheetDetailVC, animated: true)
+    }
+    
 }

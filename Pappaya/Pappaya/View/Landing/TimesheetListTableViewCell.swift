@@ -32,9 +32,9 @@ class TimesheetListTableViewCell: UITableViewCell
     
     func setStatusImage(status : TimeSheetStatus)
     {
-        let imageDict : [String : String] = [TimeSheetStatus.Open.rawValue : "icon_open" , TimeSheetStatus.WaitingForApproval.rawValue : "icon_waiting" , TimeSheetStatus.Approved.rawValue : "icon_approved", TimeSheetStatus.Rejected.rawValue : "icon_rejected"]
+        let imageDict : [String : String] = [TimeSheetStatus.Open.rawValue : "icon_open" , TimeSheetStatus.WaitingForApproval.rawValue : "icon_waiting" , TimeSheetStatus.Approved.rawValue : "icon_approved"]
         
-        let titleDict : [String : String] = [TimeSheetStatus.Open.rawValue : "Open" , TimeSheetStatus.WaitingForApproval.rawValue : "Waiting Approval" , TimeSheetStatus.Approved.rawValue : "Approved", TimeSheetStatus.Rejected.rawValue : "Rejected"]
+        let titleDict : [String : String] = [TimeSheetStatus.Open.rawValue : "Open" , TimeSheetStatus.WaitingForApproval.rawValue : "Waiting Approval" , TimeSheetStatus.Approved.rawValue : "Approved"]
         
         self.statusButton.setImage(UIImage(named: imageDict[status.rawValue]!), for: UIControlState.normal)
         self.statusButton.setTitle(titleDict[status.rawValue], for: UIControlState.normal)

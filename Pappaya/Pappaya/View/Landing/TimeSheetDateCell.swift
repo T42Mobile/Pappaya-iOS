@@ -12,7 +12,7 @@ class TimeSheetDateCell: UITableViewCell
 {
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var commentTxtView: UITextView!
-    @IBOutlet weak var timeButton: UIButton!
+    @IBOutlet weak var timeLabel: UILabel!
 
     override func awakeFromNib() {
         super.awakeFromNib()

@@ -14,7 +14,7 @@ class UserSideMenuViewController: UIViewController, UITableViewDelegate, UITable
     // MARK: -- Outlets
     
     @IBOutlet weak var profileImageButton: UIButton!
-    @IBOutlet weak var detailLabel: UILabel!
+    @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var menuTableView: UITableView!
     
     // MARK: -- Class
@@ -28,7 +28,8 @@ class UserSideMenuViewController: UIViewController, UITableViewDelegate, UITable
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        
+        // Do any additional setup after loading the view.
+
         menuDataList = [
             [SideMenuModel.init(imageName : "icon_Stats" , detailText : "Weekly"), SideMenuModel.init(imageName : "icon_Review" , detailText : "My timesheet")
             ],
@@ -40,11 +41,22 @@ class UserSideMenuViewController: UIViewController, UITableViewDelegate, UITable
         {
            menuDataList[0].append(SideMenuModel.init(imageName : "icon_History" , detailText : "Timesheet to approve"))
         }
+        self.nameLabel.text = getStringForKeyFromUserDefaults(key: Constants.UserDefaultsKey.UserFirstName) + " "  + getStringForKeyFromUserDefaults(key: Constants.UserDefaultsKey.UserLastName)
+        self.profileImageButton.setImage(getUserImage(), for: UIControlState.normal)
+        CustomActivityIndicator.shared.showProgressView()
+        ServiceHelper.sharedInstance.getListOfTimeSheet(completionHandler: { (detailDict, error) -> Void in
+            CustomActivityIndicator.shared.hideProgressView()
+            if let dict = detailDict
+            {
+                DataBaseHelper.sharedInstance.deleteAllDataForTimeSheet()
+                TimeSheetBL.sharedInstance.convertTimeSheetDetailFromServerToModel(detailDict: dict)
+            }
+            else
+            {
+                _ = CustomAlertController.alert(title: "Alert", message: error!.localizedDescription)
+            }
+        })
         
-        TimeSheetBL.sharedInstance.sampleDemoData()
-        
-        
-        // Do any additional setup after loading the view.
     }
     
     override func didReceiveMemoryWarning()
@@ -132,5 +144,19 @@ class UserSideMenuViewController: UIViewController, UITableViewDelegate, UITable
             cell.sectionLabel.text = "General Setting"
         }
         return cell.contentView
+    }
+    
+    // MARK:- Private functions
+    
+    private func getUserImage() -> UIImage
+    {
+        if let userImageData = UserDefaults.standard.object(forKey: Constants.UserDefaultsKey.UserImage) as? Data
+        {
+            if let image = UIImage(data: userImageData)
+            {
+                return image
+            }
+        }
+        return UIImage(named: "logo_pappaya")!
     }
 }

@@ -20,8 +20,8 @@ class TimeSheetDetailModel: NSObject
     var timeSheetId : Int = 0
     var status : TimeSheetStatus = TimeSheetStatus.WaitingForApproval
     var totalHoursWorked : String = ""
+    var listOfProjectName : String = ""
     var timeSheetProjectArray : [TimeSheetProjectDetailModel] = []
-    
     
     convenience init(dictionary : NSDictionary)
     {
@@ -78,4 +78,19 @@ class TimeSheetDetailModel: NSObject
             }
     }
     
+}
+
+struct TimeSheetListModel
+{
+    var fromDate : String = ""
+    var toDate : String = ""
+    var fromDateObject : Date = Date().dateWithOutTime()
+    var toDateObject : Date = Date().dateWithOutTime()
+    var employeeName : String = ""
+    var employeeId : Int = 0
+    var userId : Int = 0
+    var timeSheetId : Int = 0
+    var status : TimeSheetStatus = TimeSheetStatus.WaitingForApproval
+    var totalHoursWorked : Double = 0.0
+    var listOfProjectName : String = ""
 }

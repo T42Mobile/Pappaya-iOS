@@ -1,39 +1,45 @@
 //
-//  LandingViewController.swift
+//  TimeSheetDetailViewController.swift
 //  Pappaya
 //
-//  Created by Thirumal on 30/11/16.
+//  Created by Thirumal on 28/12/16.
 //  Copyright © 2016 Think42labs. All rights reserved.
 //
 
 import UIKit
 
-class LandingViewController: SlideDelegateViewController, UITableViewDelegate , UITableViewDataSource
+class TimeSheetDetailViewController: UIViewController, UITableViewDelegate , UITableViewDataSource
 {
     //MARK:- Variables
     //MARK:-- Outlet
     @IBOutlet weak var tableView : UITableView!
-    @IBOutlet weak var emptyStateView: UIView!
+    @IBOutlet weak var employeeName: UILabel!
     @IBOutlet weak var timeLabel: UILabel!
     @IBOutlet weak var totalHoursLabel: UILabel!
     @IBOutlet weak var tableEmptyStateView: UIView!
     
+    @IBOutlet weak var rightBtn: RoundCornerButton!
+    @IBOutlet weak var leftBtn: RoundCornerButton!
+    @IBOutlet weak var bottomViewHgtCnt: NSLayoutConstraint!
+    
+    @IBOutlet weak var addBtn: RoundCornerButton!
+    @IBOutlet weak var emptyStateAddBtn: RoundCornerButton!
+    
     //MARK:-- Class
-    var timeSheetDetail : TimeSheetDetailModel = TimeSheetDetailModel()
+    var timeSheetDetail : TimeSheetListModel = TimeSheetListModel()
     var timeSheetDateList : [TimeSheetDateModel] = []
+    var timeSheetType : TimeSheetListView = TimeSheetListView.MyTimeSheet
     
     //MARK:- View life cycle
     
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        
         // Do any additional setup after loading the view.
-        
         self.tableView.estimatedRowHeight = 300
         
     }
-
+    
     override func didReceiveMemoryWarning()
     {
         super.didReceiveMemoryWarning()
@@ -42,15 +48,26 @@ class LandingViewController: SlideDelegateViewController, UITableViewDelegate , 
     
     override func viewWillAppear(_ animated: Bool)
     {
-        if let timeSheetDetailModel = TimeSheetBL.sharedInstance.getCurrentWeekTimeSheet()
+        self.bottomViewHgtCnt.constant = 0
+        if timeSheetType == TimeSheetListView.TimeSheetToApprove
         {
-            self.setTimeSheetDetail(timeSheetDetail:timeSheetDetailModel)
-            emptyStateView.isHidden = true
+            self.leftBtn.setTitle("Reject", for: UIControlState.normal)
+            self.rightBtn.setTitle("Accept", for: UIControlState.normal)
+            self.bottomViewHgtCnt.constant = 34
         }
         else
         {
-            emptyStateView.isHidden = false
+            if timeSheetDetail.status == TimeSheetStatus.Open
+            {
+                self.leftBtn.setTitle("Save", for: UIControlState.normal)
+                self.rightBtn.setTitle("Submit", for: UIControlState.normal)
+                self.bottomViewHgtCnt.constant = 34
+                self.addBtn.isHidden = false
+                self.emptyStateAddBtn.isHidden = false
+            }
         }
+        
+        self.setTimeSheetDetail()
     }
     
     //MARK:- Table View data source
@@ -83,9 +100,9 @@ class LandingViewController: SlideDelegateViewController, UITableViewDelegate , 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView?
     {
         let sectionView = tableView.dequeueReusableCell(withIdentifier: Constants.TableViewCellIdentifier.TimeSheetSectionCell) as! TimeSheetSectionCell
-        let projectDetail = self.timeSheetDetail.timeSheetProjectArray[section]
-        sectionView.projectLabel.text = projectDetail.projectName
-        sectionView.billableLabel.text = projectDetail.isBillable.rawValue        
+//        let projectDetail = timeSheetDateList[]
+//        sectionView.projectLabel.text = projectDetail.projectName
+//        sectionView.billableLabel.text = projectDetail.isBillable.rawValue
         
         return sectionView.contentView
     }
@@ -100,17 +117,21 @@ class LandingViewController: SlideDelegateViewController, UITableViewDelegate , 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
         let cell = tableView.dequeueReusableCell(withIdentifier: Constants.TableViewCellIdentifier.TimeSheetRowCell, for: indexPath) as! TimeSheetDateCell
-        let dateDetail = timeSheetDetail.timeSheetProjectArray[indexPath.section].timeSheetDateDetailArray[indexPath.row]
+        let dateDetail = timeSheetDateList[indexPath.row]
         cell.commentTxtView.text = dateDetail.comment
         cell.dateLabel.attributedText = getDisplayDate(dateObject: dateDetail.dateObject)
-        cell.timeLabel.text = dateDetail.hoursWorked + " Hrs"
+        cell.timeLabel.text = String(dateDetail.hoursWorked) + " Hrs"
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool
     {
-        return true
+        if timeSheetDetail.status == TimeSheetStatus.Open
+        {
+            return true
+        }
+        return false
     }
     
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]?
@@ -121,14 +142,10 @@ class LandingViewController: SlideDelegateViewController, UITableViewDelegate , 
         }
         
         let delete = UITableViewRowAction(style: .destructive, title: "Delete") { action, indexPath in
-           _ = CustomAlertController.alert(title: "Confirm", message:  "Are you sure you want to delete this time sheet date.", buttons: ["Cancel","Delete"], tapBlock: { (alert, index) in
+            _ = CustomAlertController.alert(title: "Confirm", message:  "Are you sure you want to delete this time sheet date.", buttons: ["Cancel","Delete"], tapBlock: { (alert, index) in
                 if index == 1
                 {
-                    self.timeSheetDetail.timeSheetProjectArray[indexPath.section].timeSheetDateDetailArray.remove(at: indexPath.row)
-                    if self.timeSheetDetail.timeSheetProjectArray[indexPath.section].timeSheetDateDetailArray.count == 0
-                    {
-                        self.timeSheetDetail.timeSheetProjectArray.remove(at: indexPath.section)
-                    }
+                    self.timeSheetDateList.remove(at: indexPath.row)
                     self.tableView.reloadData()
                 }
             })
@@ -142,9 +159,9 @@ class LandingViewController: SlideDelegateViewController, UITableViewDelegate , 
     {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "EEE"
-
+        
         let attributedString = NSMutableAttributedString()
-
+        
         attributedString.append(NSAttributedString(string: dateFormatter.string(from: dateObject).uppercased(), attributes: [ NSFontAttributeName: UIFont.systemFont(ofSize: 13) ]))
         
         dateFormatter.dateFormat = "dd"
@@ -160,11 +177,6 @@ class LandingViewController: SlideDelegateViewController, UITableViewDelegate , 
     
     //MARK:- Button Action
     
-    @IBAction func createTimeSheetButtonClicked(_ sender: UIButton)
-    {
-        self.performSegue(withIdentifier: Constants.SegueIdentifier.NewTimeSheetSegueIdentifier, sender: nil)
-    }
-    
     @IBAction func newTimeSheetButtonClicked(_ sender: UIBarButtonItem)
     {
         self.performSegue(withIdentifier: Constants.SegueIdentifier.NewTimeSheetSegueIdentifier, sender: nil)
@@ -175,11 +187,35 @@ class LandingViewController: SlideDelegateViewController, UITableViewDelegate , 
         self.performSegue(withIdentifier: Constants.SegueIdentifier.AddTimeSheetSegueIdentifier, sender: "add")
     }
     
+    @IBAction func leftButtonAction(_ sender: RoundCornerButton)
+    {
+        if timeSheetType == TimeSheetListView.TimeSheetToApprove
+        {
+            
+        }
+        else
+        {
+            
+        }
+    }
+    
+    @IBAction func rightButtonAction(_ sender: RoundCornerButton)
+    {
+        if timeSheetType == TimeSheetListView.TimeSheetToApprove
+        {
+            
+        }
+        else
+        {
+            
+        }
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == Constants.SegueIdentifier.AddTimeSheetSegueIdentifier
         {
             let addViewController = segue.destination as! AddTimeSheetViewController
-            addViewController.timeSheetDetail = self.timeSheetDetail
+           // addViewController.timeSheetDetail = self.timeSheetDetail
             
             if let indexPath = sender as? IndexPath
             {
@@ -188,13 +224,13 @@ class LandingViewController: SlideDelegateViewController, UITableViewDelegate , 
         }
     }
     
-    //MARK:- Private function 
+    //MARK:- Private function
     
-    private func setTimeSheetDetail(timeSheetDetail : TimeSheetDetailModel)
+    private func setTimeSheetDetail()
     {
-        self.timeSheetDetail = timeSheetDetail
+        self.employeeName.text = self.timeSheetDetail.employeeName
         self.timeLabel.text = convertDateToString(date: self.timeSheetDetail.fromDateObject, format: Constants.DateConstants.CommonDateFormat) + "  to  " + convertDateToString(date: self.timeSheetDetail.toDateObject, format: Constants.DateConstants.CommonDateFormat)
-        self.totalHoursLabel.text = self.timeSheetDetail.totalHoursWorked + " Hrs"
+        self.totalHoursLabel.text = String(self.timeSheetDetail.totalHoursWorked) + " Hrs"
         self.tableView.reloadData()
     }
     

@@ -17,6 +17,7 @@ struct Constants
         static let MyTimesheetViewController : String = "myTimeSheetVC"
         static let TimeSheetToApproveViewController : String = "timeSheetToApproveVC"
         static let NewTimesheetViewController : String = "newTimesheetVC"
+        static let TimeSheetDetailViewController : String = "timeSheetDetailVC"
     }
     
     struct StoryBoardIdentifiers
@@ -37,6 +38,7 @@ struct Constants
     struct SegueIdentifier
     {
         static let NewTimeSheetSegueIdentifier : String = "newTimeSheet_SG"
+        static let AddTimeSheetSegueIdentifier : String = "addTimeSheet_SG"
     }
     
     struct Color
@@ -50,6 +52,11 @@ struct Constants
         static let UserFirstName : String = "userFirstName"
         static let UserLastName : String = "userLastName"
         static let IsManager : String = "isManager"
+        static let DBName : String = "dbName"
+        static let UserName : String = "userName"
+        static let Password : String = "password"
+        static let UserImage : String = "userImage"
+        static let UserId : String = "userId"
     }
     
     struct DateConstants
@@ -57,6 +64,18 @@ struct Constants
         static let DateFormatFromServer : String = "yyyy-MM-dd"
         static let CommonDateFormat : String = "dd MMM, yyyy"
         static let CommonTimeZone : TimeZone = TimeZone.init(secondsFromGMT: 0)!
+    }
+    
+    struct ServiceApi
+    {
+//        static let DomainUrl : String = "192.168.43.94:8069"
+        static let DomainUrl : String = ".pappaya.co.uk"
+        static let Login : String = "login"
+        static let CreateTimeSheet : String = "create"
+        static let UpdateTimeSheet : String = "update"
+        static let UpdateTimeSheetStatus : String = "update_status"
+        static let ListOfProjects : String = "project_list"
+        static let TimeSheetList : String = "timesheet"
     }
     
 }
@@ -68,12 +87,17 @@ enum TimeSheetStatus : String
     case Open = "draft"
     case WaitingForApproval = "confirm"
     case Approved = "done"
-    case Rejected = "rejected"
 }
 
 enum BillableStatus : String
 {
     case Billable = "Billable"
     case Non_Billable = "Non-Billable"
+}
+
+enum TimeSheetListView : String
+{
+    case MyTimeSheet
+    case TimeSheetToApprove
 }
 

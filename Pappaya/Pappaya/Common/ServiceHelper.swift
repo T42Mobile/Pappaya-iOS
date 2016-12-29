@@ -11,25 +11,51 @@ import UIKit
 class WebServiceDataModel: NSObject
 {
     var error : Error?
-    var returnValue : AnyObject?
+    var returnValue : Any?
 }
 
 class ServiceHelper: NSObject
 {
-    class func authendicateLogin(userName : String, password : String, completionHandler : (NSDictionary? , NSError?) -> Void?)
+    static let sharedInstance = ServiceHelper()
+    
+    //MARK:- Login
+    
+    func authendicateLogin(userName : String, password : String, dbName : String ,completionHandler : @escaping (NSDictionary? , NSError?) -> Void?)
     {
-        let dictionary : NSDictionary = [
-            Constants.UserDefaultsKey.UserFirstName : "Thirumal" , Constants.UserDefaultsKey.UserLastName : "Sivakumar" , Constants.UserDefaultsKey.IsManager : true
-        ]
-        completionHandler(dictionary, nil)
+        let urlRequest = getUrlRequestWithUrl(urlString: Constants.ServiceApi.Login, hostName : dbName, postData: ["db" : dbName,"login" : userName, "password" : password])
+        webServiceCall(urlRequest: urlRequest, completionHandler:{ (serviceResultModel) -> Void in
+                completionHandler(serviceResultModel.returnValue as? NSDictionary,serviceResultModel.error as NSError?)
+        })
     }
     
-    func serviceCall()
+    //MARK:- Time Sheet
+    
+    func getListOfTimeSheet(completionHandler : @escaping (NSDictionary? , NSError?) -> Void?)
     {
-        let parameters = ["name": "", "password": ""] as Dictionary<String, String>
+        let urlRequest = getUrlRequestWithUrl(urlString: Constants.ServiceApi.TimeSheetList, hostName : getStringForKeyFromUserDefaults(key: Constants.UserDefaultsKey.DBName), postData: getDefaultLoginDetail())
+        webServiceCall(urlRequest: urlRequest, completionHandler:{ (serviceResultModel) -> Void in
+            completionHandler(serviceResultModel.returnValue as? NSDictionary,serviceResultModel.error as NSError?)
+        })
+    }
+    
+    func getDefaultLoginDetail() -> [String : Any]
+    {
+       return [
+        "db" : getStringForKeyFromUserDefaults(key: Constants.UserDefaultsKey.DBName),
+               "login" : getStringForKeyFromUserDefaults(key: Constants.UserDefaultsKey.UserName),
+               "password" : getStringForKeyFromUserDefaults(key: Constants.UserDefaultsKey.Password)
+        ]
+    }
+    
+    func getUrlRequestWithUrl(urlString : String,hostName : String, postData : [String : Any]) -> URLRequest
+    {
+        let parameters =
+            [
+                "jsonrpc":"2.0","method":"call","id":"2","params":postData
+                ] as Dictionary<String, Any>
         
         //create the url with URL
-        let url = URL(string: "http://myServerName.com/api")! //change the url       
+        let url = URL(string: "https://" + hostName + Constants.ServiceApi.DomainUrl + "/mobile/" + urlString)!
         
         //now create the URLRequest object using the url object
         var request = URLRequest(url: url)
@@ -44,47 +70,64 @@ class ServiceHelper: NSObject
         
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         request.addValue("application/json", forHTTPHeaderField: "Accept")
-        
-        
+        return request
     }
     
     func webServiceCall(urlRequest : URLRequest , completionHandler : @escaping (WebServiceDataModel) -> Void?)
     {
-        //create the session object
-        let session = URLSession.shared
-        //create dataTask using the session object to send data to the server
-        let task = session.dataTask(with: urlRequest , completionHandler: { data, response, error in
-            
-            let webServiceData = WebServiceDataModel()
-            if error != nil
-            {
-                webServiceData.error = error
-            }
-            else
-            {
-                do
+        if checkInternetConnection()
+        {
+            //create the session object
+            let session = URLSession.shared
+            //create dataTask using the session object to send data to the server
+            let task = session.dataTask(with: urlRequest , completionHandler: { data, response, error in
+                
+                let webServiceData = WebServiceDataModel()
+                if error != nil
                 {
-                    if let json = try JSONSerialization.jsonObject(with: data!, options: .allowFragments) as? [String: Any]
+                    webServiceData.error = error
+                }
+                else
+                {
+                    do
                     {
-                        print(json)
-                        webServiceData.returnValue = json as AnyObject?
+                        if let json = try JSONSerialization.jsonObject(with: data!, options: .allowFragments) as? [String: Any]
+                        {
+                            if let result = json["result"]
+                            {
+                                webServiceData.returnValue = result
+                            }
+                            else
+                            {
+                                webServiceData.error = self.getLocalErrorWithCode(errorCode: 103, errorMessage: "Internal server error, Please try again later.")
+                            }
+                        }
+                        else
+                        {
+                            webServiceData.error = self.getLocalErrorWithCode(errorCode: 102, errorMessage: "Json error, Please try again later.")
+                        }
                     }
-                    else
+                    catch
                     {
-                        webServiceData.error = NSError(domain: "Pappaya", code: 101, userInfo: [NSLocalizedFailureReasonErrorKey : "Invalid data"])
+                        webServiceData.error = self.getLocalErrorWithCode(errorCode: 101, errorMessage: "Invalid Data, Please try again later.")
                     }
                 }
-                catch
-                {
-                    webServiceData.error = NSError(domain: "Pappaya", code: 101, userInfo: [NSLocalizedFailureReasonErrorKey : "Invalid data"])
-                    print("error in JSONSerialization")
+                DispatchQueue.main.async(){
+                    completionHandler(webServiceData)
                 }
-            }
-            DispatchQueue.global(qos: .userInitiated).async
-                {
-                completionHandler(webServiceData)
-            }
-        })
-        task.resume()
+            })
+            task.resume()
+        }
+        else
+        {
+            let serviceError = WebServiceDataModel()
+            serviceError.error = self.getLocalErrorWithCode(errorCode: 100, errorMessage: "No Internet connection, Please try again later.")
+            completionHandler(serviceError)
+        }
+    }
+    
+    func getLocalErrorWithCode(errorCode : Int, errorMessage : String) -> NSError
+    {
+       return NSError(domain: "Pappaya", code: errorCode, userInfo: [NSLocalizedDescriptionKey : errorMessage])
     }
 }
