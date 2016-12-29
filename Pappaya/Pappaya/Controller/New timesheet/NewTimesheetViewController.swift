@@ -8,7 +8,7 @@
 
 import UIKit
 
-class NewTimesheetViewController: UIViewController, UITableViewDelegate, UITableViewDataSource , UITextFieldDelegate
+class NewTimesheetViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource
 {
     //MARK:- Variables
     //MARK:-- Outlet
@@ -17,15 +17,14 @@ class NewTimesheetViewController: UIViewController, UITableViewDelegate, UITable
     @IBOutlet weak var toDateTxtField: UITextField!
     @IBOutlet weak var nonBillableBtn: UIButton!
     @IBOutlet weak var billableBtn: UIButton!
-    @IBOutlet weak var projectBtn: UIButton!
+    @IBOutlet weak var projectTxtField: UITextField!
     
     //MARK:-- Class
     
-    var tableView : UITableView = UITableView()
-    var projectList : [String] = ["Project 1" , "Project 1" ,"Project 1" ,"Project 1" , "Project 2" ,"Project 2"]
+    var projectList : [TimeSheetProjectModel] = []
     var fromDate : Date = Date()
     var toDate : Date = Date()
-    
+    var selectedIndex : IndexPath = IndexPath(row: 0, section: 0)
     //MARK:- View life cycle
     
     override func viewDidLoad()
@@ -33,31 +32,18 @@ class NewTimesheetViewController: UIViewController, UITableViewDelegate, UITable
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
-        
+        self.projectList = TimeSheetBL.sharedInstance.getProjectList()
         self.billableBtn.isSelected = true
-        
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: Constants.TableViewCellIdentifier.ProjectListCell)
-        
-        tableView.tableFooterView = UIView(frame: CGRect.zero)
         self.addDoneButtonToTextField()
-       toDate = getDateWithIntervalFromDate(date: Date(), interval: 7)
+        toDate = getDateWithIntervalFromDate(date: Date(), interval: 7)
         setDateToTextField(date: fromDate, textField: fromDateTxtField)
         setDateToTextField(date: toDate, textField: toDateTxtField)
-        
     }
 
     override func didReceiveMemoryWarning()
     {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
-    }
-    
-    override func viewDidLayoutSubviews()
-    {
-        setShadowForView(tableView, cornerRadius : 5, shadowOpacity : 2.0)
-        self.view.addSubview(tableView)
     }
     
     override func viewWillAppear(_ animated: Bool)
@@ -77,69 +63,26 @@ class NewTimesheetViewController: UIViewController, UITableViewDelegate, UITable
         self.nonBillableBtn.isSelected = false
     }
     
-    @IBAction func projectButtonClicked(_ sender: UIButton)
-    {
-        showTableView()
-    }
-    
-    func showTableView()
-    {
-        tableView.alpha = 0.0
-        tableView.frame = projectBtn.frame
-        tableView.frame.size.height = 0
-        
-        var tableHeight : CGFloat = 176
-        
-        if projectList.count < 4
-        {
-            tableHeight = CGFloat(projectList.count) * 44.0
-        }
-        UIView.animate(withDuration: 0.3, animations:
-            {
-                self.tableView.frame.size.height = tableHeight
-                self.tableView.alpha = 1.0
-        }
-        )
-    }
-    
-    //MARK:- TableView 
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
-    {
-        return projectList.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
-    {
-        let cell = tableView.dequeueReusableCell(withIdentifier: Constants.TableViewCellIdentifier.ProjectListCell, for: indexPath)
-        cell.textLabel?.text = projectList[indexPath.row]
-        
-        return cell
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.projectBtn.setTitle(projectList[indexPath.row], for: UIControlState.normal)
-        self.tableView.frame.size.height = 0
-        self.tableView.alpha = 0.0
-    }
-    
     //MARK:- Textfield
     
     func textFieldDidBeginEditing(_ textField: UITextField)
     {
-        let datePickerView:UIDatePicker = UIDatePicker()
-        if textField.tag == 1
+        if textField != self.projectTxtField
         {
-            datePickerView.setDate(fromDate, animated: false)
+            let datePickerView:UIDatePicker = UIDatePicker()
+            if textField.tag == 1
+            {
+                datePickerView.setDate(fromDate, animated: false)
+            }
+            else if textField.tag == 2
+            {
+                datePickerView.setDate(toDate, animated: false)
+            }
+            datePickerView.tag = textField.tag
+            datePickerView.datePickerMode = UIDatePickerMode.date
+            textField.inputView = datePickerView
+            datePickerView.addTarget(self, action: #selector(NewTimesheetViewController.datePickerValueChanged), for: UIControlEvents.valueChanged)
         }
-        else if textField.tag == 2
-        {
-            datePickerView.setDate(toDate, animated: false)
-        }
-        datePickerView.tag = textField.tag
-        datePickerView.datePickerMode = UIDatePickerMode.date
-        textField.inputView = datePickerView
-        datePickerView.addTarget(self, action: #selector(NewTimesheetViewController.datePickerValueChanged), for: UIControlEvents.valueChanged)
     }
     
     func datePickerValueChanged(sender:UIDatePicker)
@@ -166,6 +109,18 @@ class NewTimesheetViewController: UIViewController, UITableViewDelegate, UITable
         toolbarDone.items = [flexSpace,barBtnDone] // You can even add cancel button too
         fromDateTxtField.inputAccessoryView = toolbarDone
         toDateTxtField.inputAccessoryView = toolbarDone
+        projectTxtField.inputAccessoryView = toolbarDone
+        
+        let projectPickerView:UIPickerView = UIPickerView()
+        projectPickerView.frame.size.height = 160
+        projectPickerView.delegate = self
+        projectPickerView.dataSource = self
+        self.projectTxtField.inputView = projectPickerView
+        
+        if projectList.count > 0
+        {
+            self.pickerView(projectPickerView, didSelectRow: 0, inComponent: 0)
+        }
     }
     
     func doneButtonClicked()
@@ -204,15 +159,113 @@ class NewTimesheetViewController: UIViewController, UITableViewDelegate, UITable
     
     @IBAction func saveButtonActionClicked(_ sender: UIBarButtonItem)
     {
-        if getIntervalBetweenToDate(fromDate : fromDate , toDate : toDate).day! < 7
+        if projectTxtField.text?.characters.count == 0
+        {
+            _ = CustomAlertController.alert(title: "Warning", message: "Please select project name")
+        }
+        else if getIntervalBetweenToDate(fromDate : fromDate , toDate : toDate).day! < 7
         {
             _ = CustomAlertController.alert(title: "Warning", message: "Please select atleast 7 days")
         }
-        else 
+        else if TimeSheetBL.sharedInstance.checkTimeSheetOverLap(fromDate: fromDate, toDate: toDate)
         {
-            print(TimeSheetBL.sharedInstance.checkTimeSheetOverLap(fromDate: fromDate, toDate: toDate))
+            _ = CustomAlertController.alert(title: "Warning", message: "Time sheet cannot overlap")
+        }
+        else
+        {
+            CustomActivityIndicator.shared.showProgressView()
+            ServiceHelper.sharedInstance.createTimeSheetForPeriod(fromDate: fromDate, toDate: toDate, completionHandler: { (detailDict, error) -> Void in
+                CustomActivityIndicator.shared.hideProgressView()
+                if let dict = detailDict
+                {
+                    let status = dict["status"] as! Int
+                    
+                    if status == 200
+                    {
+                        self.saveCreatedTimeSheetDetail(detail: dict)
+                    }
+                    else
+                    {
+                        _ = CustomAlertController.alert(title: "Alert", message: "Please try again later.")
+                    }
+                }
+                else
+                {
+                    _ = CustomAlertController.alert(title: "Alert", message: error!.localizedDescription)
+                }
+            })
         }
     }
     
+    //MARK:- Picker view delegate
     
+    func numberOfComponents(in pickerView: UIPickerView) -> Int
+    {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int
+    {
+        return projectList.count
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat
+    {
+        return 40
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String?
+    {
+        return projectList[row].projectName
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int)
+    {
+        selectedIndex = IndexPath(row: row, section: component)
+        self.projectTxtField.text = projectList[row].projectName
+    }
+    
+    private func saveCreatedTimeSheetDetail(detail : NSDictionary)
+    {
+        let timeSheetId = detail["sheet_id"] as! Int
+        
+        TimeSheetBL.sharedInstance.saveTimeSheetDetail(detail: detail["detail"] as! NSDictionary)
+        
+        let timeSheetDateList = getTimeSheetDateList(timeSheetId: timeSheetId)
+        var timeSheetDetail = TimeSheetBL.sharedInstance.getTimeSheetDetailForTimeSheetId(timeSheetId: timeSheetId)
+        
+        timeSheetDetail.totalHoursWorked = Double(timeSheetDateList.count) * 8.0
+        
+        let timeSheetDetailViewController = getViewControllerWithIdentifier(identifier: Constants.ViewControllerIdentifiers.TimeSheetDetailViewController) as! TimeSheetDetailViewController
+        timeSheetDetailViewController.timeSheetDetail = timeSheetDetail
+        timeSheetDetailViewController.timeSheetDateList = timeSheetDateList
+        timeSheetDetailViewController.timeSheetType = TimeSheetListView.MyTimeSheet
+        
+        _ = self.navigationController?.popViewController(animated: false)
+        getAppDelegate().rootNavigationController.pushViewController(timeSheetDetailViewController, animated: true)
+        
+    }
+    
+    private func getTimeSheetDateList(timeSheetId : Int) -> [TimeSheetDateModel]
+    {
+        var timeSheetDateList : [TimeSheetDateModel] = []
+        
+        let interval = getIntervalBetweenToDate(fromDate: fromDate, toDate: toDate).day!
+        let selectedProject = projectList[selectedIndex.row]
+        
+        for index : Int in 0 ..< interval + 1
+        {
+            let timeSheetDateModel = TimeSheetDateModel()
+            let date = getDateWithIntervalFromDate(date: fromDate, interval: index).dateWithOutTime()
+            timeSheetDateModel.dateObject = date
+            timeSheetDateModel.dateString = convertDateToString(date: date, format: Constants.DateConstants.DateFormatFromServer)
+            timeSheetDateModel.comment = "/"
+            timeSheetDateModel.projectName = selectedProject.projectName
+            timeSheetDateModel.projectId = selectedProject.projectId
+            timeSheetDateModel.timeSheetId = timeSheetId
+            
+            timeSheetDateList.append(timeSheetDateModel)
+        }
+        return timeSheetDateList
+    }
 }

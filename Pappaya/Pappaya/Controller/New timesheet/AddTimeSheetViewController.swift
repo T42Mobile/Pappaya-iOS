@@ -23,11 +23,16 @@ class AddTimeSheetViewController:UIViewController, UITextFieldDelegate , UIPicke
     
     //MARK:-- Class
     
-    var projectList : [String] = ["Project 1" , "Project 1" ,"Project 1" ,"Project 1" , "Project 2" ,"Project 2"]
-    var timeSheetDetail : TimeSheetDetailModel = TimeSheetDetailModel()
-    var timeSheetDateDetail : TimeSheetDateDetailModel = TimeSheetDateDetailModel()
-    var selectedIndexPath : IndexPath?
+    var projectList : [TimeSheetProjectModel] = []
+    var timeSheetDetail : TimeSheetListModel = TimeSheetListModel()
+    var timeSheetDateDetail : TimeSheetDateModel = TimeSheetDateModel()
+    var timeSheetDateModelList : [TimeSheetDateModel] = []
+    
     var changeView : Bool = true
+    var selectedIndex : IndexPath = IndexPath(row: 0, section: 0)
+    var viewType : AddTimeSheetType = AddTimeSheetType.Create
+    var indexPath : IndexPath = IndexPath(row: 0, section: 0)
+    var delegate : AddTimeSheetDelegate?
     
     //MARK:- View life cycle
     
@@ -36,13 +41,11 @@ class AddTimeSheetViewController:UIViewController, UITextFieldDelegate , UIPicke
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
-        
-        self.addInputViewToTextField()
-        self.addDoneButtonToTextField()
+        self.projectList = TimeSheetBL.sharedInstance.getProjectList()
+
         self.billableButtonClicked(billableBtn)
         setBorderColorForView(self.commentTxtView, borderColor: getUIColorForRGB(230, green: 230, blue: 230), borderWidth: 1.0)
         setCornerRadiusForView(self.commentTxtView, cornerRadius: 5.0)
-        
     }
     
     override func didReceiveMemoryWarning()
@@ -61,12 +64,7 @@ class AddTimeSheetViewController:UIViewController, UITextFieldDelegate , UIPicke
         self.bindToKeyboard()
         self.navigationController!.navigationBar.topItem?.title = ""
         
-        if let indexPath = selectedIndexPath
-        {
-            self.timeSheetDateDetail = self.timeSheetDetail.timeSheetProjectArray[indexPath.section].timeSheetDateDetailArray[indexPath.row]
-            
-        }
-        else
+        if viewType == AddTimeSheetType.Create
         {
             if !TimeSheetBL.sharedInstance.isGivenDateIsWithinTimeSheetPeriod(timeSheetDetail: self.timeSheetDetail, date: Date().dateWithOutTime())
             {
@@ -75,8 +73,11 @@ class AddTimeSheetViewController:UIViewController, UITextFieldDelegate , UIPicke
         }
         
         self.projectTxtField.text = timeSheetDateDetail.projectName
-        self.timeTxtField.text = timeSheetDateDetail.hoursWorked
+        self.timeTxtField.text = String(timeSheetDateDetail.hoursWorked) + " Hrs"
+        
         setDateToTextField(date: timeSheetDateDetail.dateObject, textField: fromDateTxtField)
+        self.addInputViewToTextField()
+        self.addDoneButtonToTextField()
     }
     
     //MARK:- Button Action
@@ -96,6 +97,41 @@ class AddTimeSheetViewController:UIViewController, UITextFieldDelegate , UIPicke
     @IBAction func saveButtonActionClicked(_ sender: UIBarButtonItem)
     {
         
+        let filterList = timeSheetDateModelList.filter { (obj1) -> Bool in
+            return obj1.dateObject.compare(self.timeSheetDateDetail.dateObject) == .orderedSame
+        }
+        
+        print(filterList)
+        var totalTime : Double = self.timeSheetDateDetail.hoursWorked
+        for detail in filterList
+        {
+            totalTime += detail.hoursWorked
+        }
+        
+        if totalTime > 24.0
+        {
+            _ = CustomAlertController.alert(title: "Alert", message: "You cannot add time more than 24 hrs per day")
+        }
+        else
+        {
+            if commentTxtView.text.characters.count == 0
+            {
+                self.commentTxtView.text = "/"
+            }
+            self.timeSheetDateDetail.comment = self.commentTxtView.text!
+            
+            if viewType == AddTimeSheetType.Edit
+            {
+                timeSheetDateModelList.remove(at: indexPath.row)
+                timeSheetDateModelList.insert(self.timeSheetDateDetail, at: indexPath.row)
+            }
+            else
+            {
+                timeSheetDateModelList.append(self.timeSheetDateDetail)
+            }
+            self.delegate?.updateTimeSheetList(modelList: timeSheetDateModelList)
+            _ = self.navigationController?.popViewController(animated: true)
+        }
     }
     
     //MARK:- Text view delegate
@@ -182,12 +218,16 @@ class AddTimeSheetViewController:UIViewController, UITextFieldDelegate , UIPicke
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String?
     {
-        return projectList[row]
+        return projectList[row].projectName
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int)
     {
-        self.projectTxtField.text = projectList[row]
+        let projectDetail = projectList[row]
+        selectedIndex = IndexPath(row: row, section: component)
+        self.projectTxtField.text = projectDetail.projectName
+        self.timeSheetDateDetail.projectId = projectDetail.projectId
+        self.timeSheetDateDetail.projectName = projectDetail.projectName
     }
     
     //MARK:- Private function
@@ -212,6 +252,11 @@ class AddTimeSheetViewController:UIViewController, UITextFieldDelegate , UIPicke
         projectPickerView.delegate = self
         projectPickerView.dataSource = self
         self.projectTxtField.inputView = projectPickerView
+        
+        if projectList.count > 0
+        {
+            self.pickerView(projectPickerView, didSelectRow: 0, inComponent: 0)
+        }
     }
     
     //MARK:- Keyboard function 

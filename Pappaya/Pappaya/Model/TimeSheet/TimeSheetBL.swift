@@ -12,18 +12,13 @@ class TimeSheetBL: NSObject
 {
     static let sharedInstance = TimeSheetBL()
     
-    //MARK:- Variable
-    
-    var myTimeSheetList : [TimeSheetDetailModel] = []
-    var timeSheetToApproveList : [TimeSheetDetailModel] = []
-    
     //MARK:- Public function
     
     func checkTimeSheetOverLap(fromDate : Date , toDate : Date) -> Bool
     {
         var isTimeSheetAvailable : Bool = false
         
-        for detail in myTimeSheetList
+        for detail in self.getMyTimeSheetList()
         {
             if (detail.fromDateObject.timeIntervalSince1970 <= fromDate.timeIntervalSince1970 && detail.toDateObject.timeIntervalSince1970 >= fromDate.timeIntervalSince1970) || (detail.fromDateObject.timeIntervalSince1970 <= toDate.timeIntervalSince1970 && detail.toDateObject.timeIntervalSince1970 >= toDate.timeIntervalSince1970)
             {
@@ -32,21 +27,6 @@ class TimeSheetBL: NSObject
             }
         }
         return isTimeSheetAvailable
-    }
-    
-    func convertArrayToString(projectList : [TimeSheetProjectDetailModel]) -> String
-    {
-        var compoundString : String = ""
-        let totalCount = projectList.count
-        for index :Int in 0 ..< totalCount
-        {
-            compoundString += projectList[index].projectName
-            if index + 1 != totalCount
-            {
-                compoundString += ", "
-            }
-        }
-        return compoundString
     }
     
     func getMyTimeSheetList() -> [TimeSheetListModel]
@@ -59,12 +39,19 @@ class TimeSheetBL: NSObject
         return DataBaseHelper.sharedInstance.getTimeSheetListFromDB(isMyTimeSheet: false)
     }
     
+    func getProjectList() -> [TimeSheetProjectModel]
+    {
+        return DataBaseHelper.sharedInstance.getProjectList()
+    }
+    
     func convertTimeSheetDetailFromServerToModel(detailDict : NSDictionary)
     {
         let mySheetList = detailDict["my_time_sheet"] as! [NSDictionary]
         let approveList = detailDict["time_sheet_to_approve"] as! [NSDictionary]
+        DataBaseHelper.sharedInstance.deleteAllDataForTimeSheet()
         
         DataBaseHelper.sharedInstance.saveTimeSheetTableFromServer(detailList: mySheetList + approveList)
+        DataBaseHelper.sharedInstance.saveProjectListFromServer(projectList: detailDict["project_list"] as! [[String : Any]])
     }
     
     func getTimeSheetDateListForTimeSheetId(timeSheetId : Int) -> [TimeSheetDateModel]
@@ -72,11 +59,16 @@ class TimeSheetBL: NSObject
         return DataBaseHelper.sharedInstance.getTimeSheetDateListForSheetId(timeSheetId: timeSheetId)
     }
     
-    func getCurrentWeekTimeSheet() -> TimeSheetDetailModel?
+    func getTimeSheetDetailForTimeSheetId(timeSheetId : Int) -> TimeSheetListModel
     {
-        var timeSheetDetail : TimeSheetDetailModel?
+        return DataBaseHelper.sharedInstance.getTimeSheetDetailForId(timeSheetId: timeSheetId)
+    }
+    
+    func getCurrentWeekTimeSheet() -> TimeSheetListModel?
+    {
+        var timeSheetDetail : TimeSheetListModel?
         let currentDate = Date().dateWithOutTime()
-        for detail in myTimeSheetList
+        for detail in self.getMyTimeSheetList()
         {
             if isGivenDateIsWithinTimeSheetPeriod(timeSheetDetail: detail, date: currentDate)
             {
@@ -87,7 +79,7 @@ class TimeSheetBL: NSObject
         return timeSheetDetail
     }
     
-    func isGivenDateIsWithinTimeSheetPeriod(timeSheetDetail : TimeSheetDetailModel , date : Date) -> Bool
+    func isGivenDateIsWithinTimeSheetPeriod(timeSheetDetail : TimeSheetListModel , date : Date) -> Bool
     {
         if (timeSheetDetail.fromDateObject.timeIntervalSince1970 <= date.timeIntervalSince1970 && timeSheetDetail.toDateObject.timeIntervalSince1970 >= date.timeIntervalSince1970)
         {
@@ -96,37 +88,30 @@ class TimeSheetBL: NSObject
         return false
     }
     
-    func convertValueFromObject(fromObject : TimeSheetDetailModel , toModel : TimeSheetDetailModel)
+    func getWeekNameForDates(fromDate : Date) -> String
     {
-         toModel.fromDate = fromObject.fromDate
-         toModel.toDate = fromObject.toDate
-         toModel.fromDateObject = fromObject.fromDateObject
-         toModel.toDateObject = fromObject.toDateObject
-         toModel.employeeName = fromObject.employeeName
-         toModel.employeeId = fromObject.employeeId
-         toModel.userId = fromObject.userId
-         toModel.timeSheetId = fromObject.timeSheetId
-         toModel.status = fromObject.status
-         toModel.totalHoursWorked = fromObject.totalHoursWorked
+        let calendar = Calendar.current
+        let dateComponent = calendar.component(Calendar.Component.weekOfYear, from: fromDate)
+        return  "Week " + String(dateComponent)
     }
     
-    //MARK:- Private function
-    
-    private func convertTimeSheetDetailToModel(detailList : [NSDictionary]) -> [TimeSheetDetailModel]
+    func saveTimeSheetDetail(detail : NSDictionary)
     {
-        var timeSheetList : [TimeSheetDetailModel] = []
-        for detail in detailList
-        {
-            timeSheetList.append(TimeSheetDetailModel(dictionary: detail))
-        }
-        return timeSheetList // sortTimeSheetList(timeSheetList: timeSheetList)
+        let timeSheetDetail = detail["detail"] as! NSDictionary
+        let timeSheetId  = timeSheetDetail["id"] as! Int
+        DataBaseHelper.sharedInstance.deleteTimeSheetForId(timeSheetId:timeSheetId)
+        DataBaseHelper.sharedInstance.saveTimeSheetTableFromServer(detailList: [detail])
     }
     
-    private func sortTimeSheetList(timeSheetList : [TimeSheetDetailModel]) -> [TimeSheetDetailModel]
+    func deleteTimeSheetId(timeSheetId : Int)
     {
-        let sortedTimeSheetList = timeSheetList.sorted { (obj1, obj2) -> Bool in
-            obj1.fromDateObject.compare(obj2.fromDateObject) == ComparisonResult.orderedDescending
-        }
-        return sortedTimeSheetList
+        DataBaseHelper.sharedInstance.deleteTimeSheetForId(timeSheetId:timeSheetId)
     }
+    
+    func updateStateForTimeSheetId(sheetId : Int, status : TimeSheetStatus)
+    {
+        let predicate = NSPredicate(format: TimeSheetTableColumnName.id + " == %@", argumentArray: [sheetId])
+        DataBaseBL.sharedInstance.updateRowsInTable(tableName: EntityName.TimeSheetTable, dataDict: [TimeSheetTableColumnName.status : status.rawValue], predicate: predicate)
+    }
+    
 }

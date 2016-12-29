@@ -90,7 +90,7 @@ struct TimeSheetListModel
     var employeeId : Int = 0
     var userId : Int = 0
     var timeSheetId : Int = 0
-    var status : TimeSheetStatus = TimeSheetStatus.WaitingForApproval
+    var status : TimeSheetStatus = TimeSheetStatus.Open
     var totalHoursWorked : Double = 0.0
     var listOfProjectName : String = ""
 }

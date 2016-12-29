@@ -345,6 +345,11 @@ func checkInternetConnection() -> Bool
     return false
 }
 
+func getViewControllerWithIdentifier(identifier : String) -> UIViewController
+{
+    return UIStoryboard(name: Constants.StoryBoardIdentifiers.Main, bundle: nil).instantiateViewController(withIdentifier: identifier)
+}
+
 
 
 

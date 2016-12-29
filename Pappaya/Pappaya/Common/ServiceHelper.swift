@@ -38,6 +38,42 @@ class ServiceHelper: NSObject
         })
     }
     
+    func createTimeSheetForPeriod(fromDate : Date , toDate : Date, completionHandler : @escaping (NSDictionary? , NSError?) -> Void?)
+    {
+        var createPostData = getDefaultLoginDetail()
+        createPostData["name"] = TimeSheetBL.sharedInstance.getWeekNameForDates(fromDate: fromDate)
+        createPostData["from_date"] = convertDateToString(date: fromDate, format: Constants.DateConstants.DateFormatFromServer)
+        createPostData["to_date"] = convertDateToString(date: toDate, format: Constants.DateConstants.DateFormatFromServer)
+        createPostData["lines"] = []
+        print(createPostData)
+        let urlRequest = getUrlRequestWithUrl(urlString: Constants.ServiceApi.CreateTimeSheet, hostName : getStringForKeyFromUserDefaults(key: Constants.UserDefaultsKey.DBName), postData: createPostData)
+        webServiceCall(urlRequest: urlRequest, completionHandler:{ (serviceResultModel) -> Void in
+            completionHandler(serviceResultModel.returnValue as? NSDictionary,serviceResultModel.error as NSError?)
+        })
+    }
+    
+    func updateTimeSheetForId(sheetId : Int, lines : [NSDictionary], completionHandler : @escaping (NSDictionary? , NSError?) -> Void?)
+    {
+        var updatePostData = getDefaultLoginDetail()
+        updatePostData["lines"] = lines
+        updatePostData["sheet_id"] = sheetId
+        let urlRequest = getUrlRequestWithUrl(urlString: Constants.ServiceApi.UpdateTimeSheet, hostName : getStringForKeyFromUserDefaults(key: Constants.UserDefaultsKey.DBName), postData: updatePostData)
+        webServiceCall(urlRequest: urlRequest, completionHandler:{ (serviceResultModel) -> Void in
+            completionHandler(serviceResultModel.returnValue as? NSDictionary,serviceResultModel.error as NSError?)
+        })
+    }
+    
+    func updateStatusForTimeSheetId(sheetId : Int, status : String, completionHandler : @escaping (NSDictionary? , NSError?) -> Void?)
+    {
+        var updatePostData = getDefaultLoginDetail()
+        updatePostData["state"] = status
+        updatePostData["sheet_id"] = sheetId
+        let urlRequest = getUrlRequestWithUrl(urlString: Constants.ServiceApi.UpdateTimeSheetStatus, hostName : getStringForKeyFromUserDefaults(key: Constants.UserDefaultsKey.DBName), postData: updatePostData)
+        webServiceCall(urlRequest: urlRequest, completionHandler:{ (serviceResultModel) -> Void in
+            completionHandler(serviceResultModel.returnValue as? NSDictionary,serviceResultModel.error as NSError?)
+        })
+    }
+    
     func getDefaultLoginDetail() -> [String : Any]
     {
        return [
@@ -56,6 +92,8 @@ class ServiceHelper: NSObject
         
         //create the url with URL
         let url = URL(string: "https://" + hostName + Constants.ServiceApi.DomainUrl + "/mobile/" + urlString)!
+        
+//        let url = URL(string: "http://" + Constants.ServiceApi.DomainUrl + "/mobile/" + urlString)!
         
         //now create the URLRequest object using the url object
         var request = URLRequest(url: url)
@@ -93,12 +131,14 @@ class ServiceHelper: NSObject
                     {
                         if let json = try JSONSerialization.jsonObject(with: data!, options: .allowFragments) as? [String: Any]
                         {
+                            
                             if let result = json["result"]
                             {
                                 webServiceData.returnValue = result
                             }
                             else
                             {
+                                print(json)
                                 webServiceData.error = self.getLocalErrorWithCode(errorCode: 103, errorMessage: "Internal server error, Please try again later.")
                             }
                         }

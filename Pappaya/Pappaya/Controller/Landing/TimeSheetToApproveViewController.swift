@@ -64,6 +64,7 @@ class TimeSheetToApproveViewController: SlideDelegateViewController, UITableView
         cell.totalHoursLabel.text = String(timeSheetDetail.totalHoursWorked) + " Hrs"
         cell.employeeName.text = timeSheetDetail.employeeName
         cell.projectNameLabel.text = timeSheetDetail.listOfProjectName
+        cell.setStatusImage(status: timeSheetDetail.status)
         
         return cell
     }
@@ -82,7 +83,6 @@ class TimeSheetToApproveViewController: SlideDelegateViewController, UITableView
         timeSheetDetailVC.timeSheetDetail = timeSheetDetail
         timeSheetDetailVC.timeSheetDateList = TimeSheetBL.sharedInstance.getTimeSheetDateListForTimeSheetId(timeSheetId: timeSheetDetail.timeSheetId)
         timeSheetDetailVC.timeSheetType = TimeSheetListView.TimeSheetToApprove
-        self.navigationController?.pushViewController(timeSheetDetailVC, animated: true)
+        getAppDelegate().rootNavigationController.pushViewController(timeSheetDetailVC, animated: true)
     }
-    
 }

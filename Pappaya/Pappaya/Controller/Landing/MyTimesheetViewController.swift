@@ -77,11 +77,10 @@ class MyTimesheetViewController: SlideDelegateViewController, UITableViewDelegat
     {
         let timeSheetDetail = timeSheetArray[indexPath.row]
         
-        let mainStoryBoard = UIStoryboard(name: Constants.StoryBoardIdentifiers.Main, bundle: nil)
-        let timeSheetDetailVC = mainStoryBoard.instantiateViewController(withIdentifier: Constants.ViewControllerIdentifiers.TimeSheetDetailViewController) as! TimeSheetDetailViewController
+        let timeSheetDetailVC = getViewControllerWithIdentifier(identifier : Constants.ViewControllerIdentifiers.TimeSheetDetailViewController) as! TimeSheetDetailViewController
         timeSheetDetailVC.timeSheetDetail = timeSheetDetail
         timeSheetDetailVC.timeSheetDateList = TimeSheetBL.sharedInstance.getTimeSheetDateListForTimeSheetId(timeSheetId: timeSheetDetail.timeSheetId)
-        self.navigationController?.pushViewController(timeSheetDetailVC, animated: true)
+        getAppDelegate().rootNavigationController.pushViewController(timeSheetDetailVC, animated: true)
     }
     
 }

@@ -18,6 +18,8 @@ struct Constants
         static let TimeSheetToApproveViewController : String = "timeSheetToApproveVC"
         static let NewTimesheetViewController : String = "newTimesheetVC"
         static let TimeSheetDetailViewController : String = "timeSheetDetailVC"
+        static let EmptyStateViewController : String = "emptyState_VC"
+        static let AddTimeSheetDateViewController : String = "addTimeSheetDate_vc"
     }
     
     struct StoryBoardIdentifiers
@@ -99,5 +101,11 @@ enum TimeSheetListView : String
 {
     case MyTimeSheet
     case TimeSheetToApprove
+}
+
+enum AddTimeSheetType : String
+{
+    case Create
+    case Edit
 }
 

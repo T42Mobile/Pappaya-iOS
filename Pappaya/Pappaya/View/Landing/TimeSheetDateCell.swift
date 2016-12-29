@@ -13,6 +13,7 @@ class TimeSheetDateCell: UITableViewCell
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var commentTxtView: UITextView!
     @IBOutlet weak var timeLabel: UILabel!
+    @IBOutlet weak var projectLabel: UILabel!
 
     override func awakeFromNib() {
         super.awakeFromNib()

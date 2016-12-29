@@ -22,6 +22,7 @@
 		5A3DF0D91DED968F0062B7C7 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A3DF0D81DED968F0062B7C7 /* LoginViewController.swift */; };
 		5A3DF0DD1DED9EB80062B7C7 /* FloatLabelTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A3DF0DB1DED9EB80062B7C7 /* FloatLabelTextField.swift */; };
 		5A3DF0DE1DED9EB80062B7C7 /* FloatLabelTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A3DF0DC1DED9EB80062B7C7 /* FloatLabelTextView.swift */; };
+		5A40B63F1E14DC7E005455AC /* EmptyStateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A40B63E1E14DC7E005455AC /* EmptyStateViewController.swift */; };
 		5A8552651DEC59BD000C935E /* CommonFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A8552621DEC59BD000C935E /* CommonFunctions.swift */; };
 		5A8552661DEC59BD000C935E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A8552631DEC59BD000C935E /* Constants.swift */; };
 		5A8552671DEC59BD000C935E /* CustomAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A8552641DEC59BD000C935E /* CustomAlertController.swift */; };
@@ -79,6 +80,7 @@
 		5A3DF0D81DED968F0062B7C7 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LoginViewController.swift; path = Controller/Login/LoginViewController.swift; sourceTree = "<group>"; };
 		5A3DF0DB1DED9EB80062B7C7 /* FloatLabelTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FloatLabelTextField.swift; path = LibraryFiles/FloatingTextField/FloatLabelTextField.swift; sourceTree = "<group>"; };
 		5A3DF0DC1DED9EB80062B7C7 /* FloatLabelTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FloatLabelTextView.swift; path = LibraryFiles/FloatingTextField/FloatLabelTextView.swift; sourceTree = "<group>"; };
+		5A40B63E1E14DC7E005455AC /* EmptyStateViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EmptyStateViewController.swift; path = Controller/Landing/EmptyStateViewController.swift; sourceTree = "<group>"; };
 		5A8552621DEC59BD000C935E /* CommonFunctions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CommonFunctions.swift; path = Common/CommonFunctions.swift; sourceTree = "<group>"; };
 		5A8552631DEC59BD000C935E /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Constants.swift; path = Common/Constants.swift; sourceTree = "<group>"; };
 		5A8552641DEC59BD000C935E /* CustomAlertController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CustomAlertController.swift; path = Common/CustomAlertController.swift; sourceTree = "<group>"; };
@@ -151,6 +153,7 @@
 				5AF121DB1DF199C4005E22F2 /* MyTimesheetViewController.swift */,
 				5AF121DD1DF199EB005E22F2 /* TimeSheetToApproveViewController.swift */,
 				5A1DECEA1E13E54000C63554 /* TimeSheetDetailViewController.swift */,
+				5A40B63E1E14DC7E005455AC /* EmptyStateViewController.swift */,
 			);
 			name = Landing;
 			sourceTree = "<group>";
@@ -481,6 +484,7 @@
 				5AF121D61DF1565D005E22F2 /* TimeSheetDetailModel.swift in Sources */,
 				5A31DA901DEECDD8009592CC /* LandingViewController.swift in Sources */,
 				5ABE93501DEC127900851382 /* AppDelegate.swift in Sources */,
+				5A40B63F1E14DC7E005455AC /* EmptyStateViewController.swift in Sources */,
 				5A3DF0CA1DED51810062B7C7 /* UserSideMenuViewController.swift in Sources */,
 				5A8552661DEC59BD000C935E /* Constants.swift in Sources */,
 				5A3DF0D61DED94370062B7C7 /* SideMenuModel.swift in Sources */,

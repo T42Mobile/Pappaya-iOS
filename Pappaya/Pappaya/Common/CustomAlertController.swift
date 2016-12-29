@@ -128,6 +128,11 @@ extension Date
         calendar.timeZone = Constants.DateConstants.CommonTimeZone
         return calendar.startOfDay(for: self)
     }
+    
+    func getDateStringInServerFormat() -> String
+    {
+        return convertDateToString(date: self, format: Constants.DateConstants.DateFormatFromServer)
+    }
 }
 
 class RoundCornerButton : UIButton

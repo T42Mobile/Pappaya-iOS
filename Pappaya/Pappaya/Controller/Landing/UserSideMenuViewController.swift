@@ -31,15 +31,15 @@ class UserSideMenuViewController: UIViewController, UITableViewDelegate, UITable
         // Do any additional setup after loading the view.
 
         menuDataList = [
-            [SideMenuModel.init(imageName : "icon_Stats" , detailText : "Weekly"), SideMenuModel.init(imageName : "icon_Review" , detailText : "My timesheet")
+            [SideMenuModel.init(imageName : "icon_weekly" , detailText : "Weekly"), SideMenuModel.init(imageName : "icon_myTimeSheet" , detailText : "My timesheet")
             ],
-            [SideMenuModel.init(imageName : "icon_Stats" , detailText : "Logout")
+            [SideMenuModel.init(imageName : "icon_logout" , detailText : "Logout")
             ]
         ]
         
         if getBoolValueForKey(key: Constants.UserDefaultsKey.IsManager)
         {
-           menuDataList[0].append(SideMenuModel.init(imageName : "icon_History" , detailText : "Timesheet to approve"))
+           menuDataList[0].append(SideMenuModel.init(imageName : "icon_timeSheetApprove" , detailText : "Timesheet to approve"))
         }
         self.nameLabel.text = getStringForKeyFromUserDefaults(key: Constants.UserDefaultsKey.UserFirstName) + " "  + getStringForKeyFromUserDefaults(key: Constants.UserDefaultsKey.UserLastName)
         self.profileImageButton.setImage(getUserImage(), for: UIControlState.normal)
@@ -48,8 +48,10 @@ class UserSideMenuViewController: UIViewController, UITableViewDelegate, UITable
             CustomActivityIndicator.shared.hideProgressView()
             if let dict = detailDict
             {
-                DataBaseHelper.sharedInstance.deleteAllDataForTimeSheet()
                 TimeSheetBL.sharedInstance.convertTimeSheetDetailFromServerToModel(detailDict: dict)
+                
+                // Post notification
+                NotificationCenter.default.post(name: Notification.Name("updateWeekly"), object: nil)
             }
             else
             {
@@ -82,7 +84,7 @@ class UserSideMenuViewController: UIViewController, UITableViewDelegate, UITable
         let cell = tableView.dequeueReusableCell(withIdentifier: Constants.TableViewCellIdentifier.MenuCell, for: indexPath) as! MenuTableViewCell
         let menuDetailModel = menuDataList[(indexPath as NSIndexPath).section][(indexPath as NSIndexPath).row]
         cell.menuDetailLabel.text = menuDetailModel.detailText
-        //cell.menuImageView.image = UIImage(named: menuDetailModel.imageName)
+        cell.menuImageView.image = UIImage(named: menuDetailModel.imageName)
         
         return cell
     }
@@ -114,6 +116,13 @@ class UserSideMenuViewController: UIViewController, UITableViewDelegate, UITable
                 }
                 
                 changeRootNavigationController(landingViewIdentifier: identifier)
+            }
+            else
+            {
+                UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
+                UserDefaults.standard.synchronize()
+                let loginView = UIStoryboard(name: Constants.StoryBoardIdentifiers.Main, bundle: nil).instantiateInitialViewController()
+                getAppDelegate().window?.rootViewController = loginView
             }
         }
     }

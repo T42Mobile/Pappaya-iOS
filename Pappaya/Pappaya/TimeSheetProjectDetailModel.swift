@@ -16,3 +16,9 @@ class TimeSheetProjectDetailModel: NSObject
     var timeSheetId : Int = 0
     var timeSheetDateDetailArray : [TimeSheetDateDetailModel] = []
 }
+
+class TimeSheetProjectModel
+{
+    var projectName : String = ""
+    var projectId : Int = 0
+}

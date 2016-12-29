@@ -42,6 +42,9 @@ class LoginViewController: UIViewController , UITextFieldDelegate
         self.hostNameTxtFld.text = "SIT"
         self.userNameTxtFld.text = "senthil@think42labs.com"
         self.passwordTxtFld.text = "pappaya"
+//        self.hostNameTxtFld.text = "pappaya"
+//        self.userNameTxtFld.text = "admin"
+//        self.passwordTxtFld.text = "reset123"
     }
     
     //MARK:- Button Action

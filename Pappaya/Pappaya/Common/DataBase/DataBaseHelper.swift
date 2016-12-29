@@ -8,6 +8,7 @@
 
 import UIKit
 import Foundation
+import CoreData
 
 class DataBaseHelper: NSObject
 {
@@ -67,6 +68,11 @@ class DataBaseHelper: NSObject
         }
     }
     
+    func saveProjectListFromServer(projectList : [[String : Any]])
+    {
+        DataBaseBL.sharedInstance.insertListOfDataInTable(tableName: EntityName.TimeSheetProjectTable, dataDictList: projectList)
+    }
+    
     func saveTimeSheetDateTable(timeSheetId : Int , sheetList : [[String : Any]])
     {
         if sheetList.count > 0
@@ -108,6 +114,15 @@ class DataBaseHelper: NSObject
         DataBaseBL.sharedInstance.deleteAllDataInTable(tableName: EntityName.TimeSheetDateTable)
     }
     
+    func deleteTimeSheetForId(timeSheetId : Int)
+    {
+        let predicate = NSPredicate(format: TimeSheetTableColumnName.id + " == %@", argumentArray: [timeSheetId])
+        DataBaseBL.sharedInstance.deleteDataInTableForAttribute(tableName: EntityName.TimeSheetTable, predicate: predicate)
+        let predicate1 = NSPredicate(format: TimeSheetDateTableColumnName.timeSheetId + " == %@", argumentArray: [timeSheetId])
+        DataBaseBL.sharedInstance.deleteDataInTableForAttribute(tableName: EntityName.TimeSheetDateTable, predicate: predicate1)
+        
+    }
+    
     func getTimeSheetListFromDB(isMyTimeSheet : Bool) -> [TimeSheetListModel]
     {
         let userId = UserDefaults.standard.integer(forKey: Constants.UserDefaultsKey.UserId)
@@ -129,24 +144,27 @@ class DataBaseHelper: NSObject
         
         for detail in timeSheetList
         {
-            var timeSheetModel : TimeSheetListModel = TimeSheetListModel()
-            
-            timeSheetModel.timeSheetId = detail.value(forKey: TimeSheetTableColumnName.id) as! Int
-            timeSheetModel.employeeId = detail.value(forKey: TimeSheetTableColumnName.employeeId) as! Int
-            timeSheetModel.employeeName = detail.value(forKey: TimeSheetTableColumnName.employeeName) as! String
-            timeSheetModel.userId = detail.value(forKey: TimeSheetTableColumnName.userId) as! Int
-            timeSheetModel.totalHoursWorked = detail.value(forKey: TimeSheetTableColumnName.totalHoursWorked)as! Double
-            timeSheetModel.fromDate = detail.value(forKey: TimeSheetTableColumnName.fromDate) as! String
-            timeSheetModel.toDate = detail.value(forKey: TimeSheetTableColumnName.toDate) as!
-                String
-            timeSheetModel.fromDateObject = detail.value(forKey: TimeSheetTableColumnName.fromDateObject) as! Date
-            timeSheetModel.toDateObject = detail.value(forKey: TimeSheetTableColumnName.toDateObject) as! Date
-            timeSheetModel.listOfProjectName = detail.value(forKey: TimeSheetTableColumnName.listOfProjectName) as! String
-            timeSheetModel.status =  TimeSheetStatus(rawValue :detail.value(forKey: TimeSheetTableColumnName.status) as! String)!
-            timeSheetModelList.append(timeSheetModel)
+            timeSheetModelList.append(convertTimeSheetDetailToModel(detail : detail))
         }
         return timeSheetModelList
     }
+    
+    func getTimeSheetDetailForId(timeSheetId : Int) -> TimeSheetListModel
+    {
+        let predicate = NSPredicate(format: TimeSheetTableColumnName.id + " == %@", argumentArray: [timeSheetId])
+        
+        let timeSheetList = DataBaseBL.sharedInstance.getObjectsFromTable(tableName: EntityName.TimeSheetTable, predicate: predicate, sortDescriptors: [])
+        
+        if timeSheetList.count > 0
+        {
+            return convertTimeSheetDetailToModel(detail : timeSheetList[0])
+        }
+        else
+        {
+            return TimeSheetListModel()
+        }
+    }
+    
     
     func getTimeSheetDateListForSheetId(timeSheetId : Int) -> [TimeSheetDateModel]
     {
@@ -172,6 +190,40 @@ class DataBaseHelper: NSObject
             timeSheetDateList.append(timeSheetDateModel)
         }
         return timeSheetDateList
+    }
+    
+    func getProjectList() -> [TimeSheetProjectModel]
+    {
+        var projectModelList : [TimeSheetProjectModel] = []
+        let projectList = DataBaseBL.sharedInstance.getAllObjectsFromTable(tableName: EntityName.TimeSheetProjectTable, sortDescriptors: [])
+        for detail in projectList
+        {
+            let projectModel = TimeSheetProjectModel()
+            projectModel.projectName = detail.value(forKey: TimeSheetProjectTableColumnName.name) as! String
+            projectModel.projectId = detail.value(forKey: TimeSheetProjectTableColumnName.id) as! Int
+            projectModelList.append(projectModel)
+        }
+        
+        return projectModelList
+    }
+    
+    private func convertTimeSheetDetailToModel(detail : NSManagedObject) -> TimeSheetListModel
+    {
+        var timeSheetModel : TimeSheetListModel = TimeSheetListModel()
+        
+        timeSheetModel.timeSheetId = detail.value(forKey: TimeSheetTableColumnName.id) as! Int
+        timeSheetModel.employeeId = detail.value(forKey: TimeSheetTableColumnName.employeeId) as! Int
+        timeSheetModel.employeeName = detail.value(forKey: TimeSheetTableColumnName.employeeName) as! String
+        timeSheetModel.userId = detail.value(forKey: TimeSheetTableColumnName.userId) as! Int
+        timeSheetModel.totalHoursWorked = detail.value(forKey: TimeSheetTableColumnName.totalHoursWorked)as! Double
+        timeSheetModel.fromDate = detail.value(forKey: TimeSheetTableColumnName.fromDate) as! String
+        timeSheetModel.toDate = detail.value(forKey: TimeSheetTableColumnName.toDate) as!
+        String
+        timeSheetModel.fromDateObject = detail.value(forKey: TimeSheetTableColumnName.fromDateObject) as! Date
+        timeSheetModel.toDateObject = detail.value(forKey: TimeSheetTableColumnName.toDateObject) as! Date
+        timeSheetModel.listOfProjectName = detail.value(forKey: TimeSheetTableColumnName.listOfProjectName) as! String
+        timeSheetModel.status =  TimeSheetStatus(rawValue :detail.value(forKey: TimeSheetTableColumnName.status) as! String)!
+        return timeSheetModel
     }
 }
 
