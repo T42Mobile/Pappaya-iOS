@@ -43,7 +43,6 @@ class AddTimeSheetViewController:UIViewController, UITextFieldDelegate , UIPicke
         // Do any additional setup after loading the view.
         self.projectList = TimeSheetBL.sharedInstance.getProjectList()
 
-        self.billableButtonClicked(billableBtn)
         setBorderColorForView(self.commentTxtView, borderColor: getUIColorForRGB(230, green: 230, blue: 230), borderWidth: 1.0)
         setCornerRadiusForView(self.commentTxtView, cornerRadius: 5.0)
     }
@@ -62,7 +61,7 @@ class AddTimeSheetViewController:UIViewController, UITextFieldDelegate , UIPicke
     override func viewWillAppear(_ animated: Bool)
     {
         self.bindToKeyboard()
-        self.navigationController!.navigationBar.topItem?.title = ""
+        //self.navigationController!.navigationBar.topItem?.title = ""
         
         if viewType == AddTimeSheetType.Create
         {
@@ -73,8 +72,10 @@ class AddTimeSheetViewController:UIViewController, UITextFieldDelegate , UIPicke
         }
         
         self.projectTxtField.text = timeSheetDateDetail.projectName
-        self.timeTxtField.text = String(timeSheetDateDetail.hoursWorked) + " Hrs"
-        
+        self.timeTxtField.text = String(timeSheetDateDetail.hoursWorked)
+        self.commentTxtView.text = timeSheetDateDetail.comment
+        self.billableBtn.isSelected = timeSheetDateDetail.isBillable
+        self.nonBillableBtn.isSelected = !timeSheetDateDetail.isBillable
         setDateToTextField(date: timeSheetDateDetail.dateObject, textField: fromDateTxtField)
         self.addInputViewToTextField()
         self.addDoneButtonToTextField()
@@ -86,23 +87,37 @@ class AddTimeSheetViewController:UIViewController, UITextFieldDelegate , UIPicke
     {
         self.nonBillableBtn.isSelected = true
         self.billableBtn.isSelected = false
+        self.timeSheetDateDetail.isBillable = self.billableBtn.isSelected
     }
     
     @IBAction func billableButtonClicked(_ sender: UIButton)
     {
         self.billableBtn.isSelected = true
         self.nonBillableBtn.isSelected = false
+        self.timeSheetDateDetail.isBillable = self.billableBtn.isSelected
     }
     
     @IBAction func saveButtonActionClicked(_ sender: UIBarButtonItem)
     {
         
+        if viewType == AddTimeSheetType.Edit
+        {
+            timeSheetDateModelList.remove(at: indexPath.row)
+            timeSheetDateModelList.insert(self.timeSheetDateDetail, at: indexPath.row)
+        }
+        
         let filterList = timeSheetDateModelList.filter { (obj1) -> Bool in
             return obj1.dateObject.compare(self.timeSheetDateDetail.dateObject) == .orderedSame
         }
         
-        print(filterList)
-        var totalTime : Double = self.timeSheetDateDetail.hoursWorked
+        var totalTime : Double = 0.0
+
+        if viewType == AddTimeSheetType.Create
+        {
+            totalTime += self.timeSheetDateDetail.hoursWorked
+        }
+        
+        
         for detail in filterList
         {
             totalTime += detail.hoursWorked
@@ -156,9 +171,13 @@ class AddTimeSheetViewController:UIViewController, UITextFieldDelegate , UIPicke
     
     func timePickerViewValueChanged(sender:UIDatePicker)
     {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "HH:mm"
-        self.timeTxtField.text = dateFormatter.string(from: sender.date)
+        var calender = Calendar(identifier: Calendar.Identifier.gregorian)
+        calender.timeZone = Constants.DateConstants.CommonTimeZone
+        let component = calender.dateComponents([Calendar.Component.hour,Calendar.Component.minute], from: sender.date)
+        let hours = Double(component.hour!) + (Double(component.minute!) * 0.01)
+        timeSheetDateDetail.hoursWorked = hours
+        
+        self.timeTxtField.text = String(hours)
     }
     
     func addDoneButtonToTextField()
@@ -244,7 +263,12 @@ class AddTimeSheetViewController:UIViewController, UITextFieldDelegate , UIPicke
         
         let timePickerView:UIDatePicker = UIDatePicker()
         timePickerView.datePickerMode = UIDatePickerMode.countDownTimer
+        timePickerView.timeZone = Constants.DateConstants.CommonTimeZone
         timePickerView.addTarget(self, action: #selector(AddTimeSheetViewController.timePickerViewValueChanged), for: UIControlEvents.valueChanged)
+        
+        let date = convertDateFromString(dateString: String(timeSheetDateDetail.hoursWorked), dateFormate: "H.m")
+        timePickerView.setDate(date, animated: false)
+        
         timeTxtField.inputView = timePickerView
         
         let projectPickerView:UIPickerView = UIPickerView()

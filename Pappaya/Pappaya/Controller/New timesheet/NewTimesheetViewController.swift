@@ -33,9 +33,9 @@ class NewTimesheetViewController: UIViewController, UITextFieldDelegate, UIPicke
         
         // Do any additional setup after loading the view.
         self.projectList = TimeSheetBL.sharedInstance.getProjectList()
-        self.billableBtn.isSelected = true
+        self.billableButtonClicked(self.billableBtn)
         self.addDoneButtonToTextField()
-        toDate = getDateWithIntervalFromDate(date: Date(), interval: 7)
+        toDate = getDateWithIntervalFromDate(date: Date(), interval: 6)
         setDateToTextField(date: fromDate, textField: fromDateTxtField)
         setDateToTextField(date: toDate, textField: toDateTxtField)
     }
@@ -48,7 +48,7 @@ class NewTimesheetViewController: UIViewController, UITextFieldDelegate, UIPicke
     
     override func viewWillAppear(_ animated: Bool)
     {
-        self.navigationController!.navigationBar.topItem?.title = ""
+        //self.navigationController!.navigationBar.topItem?.title = ""
     }
     //MARK:- Button Action
     @IBAction func nonBillableButtonClicked(_ sender: UIButton)
@@ -90,13 +90,26 @@ class NewTimesheetViewController: UIViewController, UITextFieldDelegate, UIPicke
         if sender.tag == 1
         {
             fromDate = sender.date
-            setDateToTextField(date: fromDate, textField: fromDateTxtField)
         }
         else if sender.tag == 2
         {
             toDate = sender.date
-            setDateToTextField(date: toDate, textField: toDateTxtField)
         }
+        
+        if getIntervalBetweenToDate(fromDate : fromDate , toDate : toDate).day! < 6
+        {
+            if sender.tag == 1
+            {
+                toDate = getDateWithIntervalFromDate(date: fromDate, interval: 6)
+            }
+            else if sender.tag == 2
+            {
+                fromDate = getDateWithIntervalFromDate(date: toDate, interval: -6)
+            }
+        }
+        
+        setDateToTextField(date: fromDate, textField: fromDateTxtField)
+        setDateToTextField(date: toDate, textField: toDateTxtField)
     }
     
     func addDoneButtonToTextField()
@@ -163,7 +176,7 @@ class NewTimesheetViewController: UIViewController, UITextFieldDelegate, UIPicke
         {
             _ = CustomAlertController.alert(title: "Warning", message: "Please select project name")
         }
-        else if getIntervalBetweenToDate(fromDate : fromDate , toDate : toDate).day! < 7
+        else if getIntervalBetweenToDate(fromDate : fromDate , toDate : toDate).day! < 6
         {
             _ = CustomAlertController.alert(title: "Warning", message: "Please select atleast 7 days")
         }
@@ -263,6 +276,7 @@ class NewTimesheetViewController: UIViewController, UITextFieldDelegate, UIPicke
             timeSheetDateModel.projectName = selectedProject.projectName
             timeSheetDateModel.projectId = selectedProject.projectId
             timeSheetDateModel.timeSheetId = timeSheetId
+            timeSheetDateModel.isBillable = self.billableBtn.isSelected
             
             timeSheetDateList.append(timeSheetDateModel)
         }

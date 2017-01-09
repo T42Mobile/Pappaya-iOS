@@ -12,7 +12,7 @@ class LandingViewController: SlideDelegateViewController
 {
     //MARK:- Variables
     //MARK:-- Outlet
-    
+    var checkUpdate : Bool = true
     //MARK:- View life cycle
     
     override func viewDidLoad()
@@ -36,7 +36,10 @@ class LandingViewController: SlideDelegateViewController
     
     override func viewWillAppear(_ animated: Bool)
     {
-        self.updateView()
+        if checkUpdate
+        {
+            self.updateView()
+        }
     }
     
     private lazy var emptyStateViewController: EmptyStateViewController = {
@@ -74,6 +77,7 @@ class LandingViewController: SlideDelegateViewController
     {
         if let timeSheetDetail = TimeSheetBL.sharedInstance.getCurrentWeekTimeSheet()
         {
+            self.checkUpdate = false
             timeSheetDetailViewController.timeSheetDetail = timeSheetDetail
             timeSheetDetailViewController.timeSheetDateList = TimeSheetBL.sharedInstance.getTimeSheetDateListForTimeSheetId(timeSheetId: timeSheetDetail.timeSheetId)
             timeSheetDetailViewController.timeSheetType = TimeSheetListView.MyTimeSheet

@@ -15,6 +15,7 @@ class TimeSheetToApproveViewController: SlideDelegateViewController, UITableView
     //MARK:-- Outlet
     
     @IBOutlet weak var tableView : UITableView!
+    @IBOutlet weak var emptyStateView: UIView!
     
     //MARK:-- Class
     
@@ -51,6 +52,14 @@ class TimeSheetToApproveViewController: SlideDelegateViewController, UITableView
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
+        if timeSheetArray.count > 0
+        {
+            self.emptyStateView.isHidden = true
+        }
+        else
+        {
+            self.emptyStateView.isHidden = false
+        }
         return timeSheetArray.count
     }
     

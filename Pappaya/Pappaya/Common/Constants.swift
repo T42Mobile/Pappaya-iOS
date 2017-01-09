@@ -59,6 +59,8 @@ struct Constants
         static let Password : String = "password"
         static let UserImage : String = "userImage"
         static let UserId : String = "userId"
+        static let HostName : String = "hostName"
+        static let EmployeeId : String = "employeeId"
     }
     
     struct DateConstants
@@ -70,14 +72,15 @@ struct Constants
     
     struct ServiceApi
     {
-//        static let DomainUrl : String = "192.168.43.94:8069"
-        static let DomainUrl : String = ".pappaya.co.uk"
+//        static let DomainUrl : String = "192.168.1.243:8069"
+//        static let DomainUrl : String = ".pappaya.co.uk"
         static let Login : String = "login"
         static let CreateTimeSheet : String = "create"
         static let UpdateTimeSheet : String = "update"
         static let UpdateTimeSheetStatus : String = "update_status"
         static let ListOfProjects : String = "project_list"
         static let TimeSheetList : String = "timesheet"
+        static let UpdateTimeSheetLineStatus : String = "update_sheet_status"
     }
     
 }
@@ -107,5 +110,13 @@ enum AddTimeSheetType : String
 {
     case Create
     case Edit
+}
+
+enum TimeSheetLineStatus : String
+{
+    case Pending = "pending"
+    case Approved = "approved"
+    case Rejected = "refused"
+    case Open = "draft"
 }
 

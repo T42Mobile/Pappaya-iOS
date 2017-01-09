@@ -20,9 +20,9 @@ class ServiceHelper: NSObject
     
     //MARK:- Login
     
-    func authendicateLogin(userName : String, password : String, dbName : String ,completionHandler : @escaping (NSDictionary? , NSError?) -> Void?)
+    func authendicateLogin(userName : String, password : String, dbName : String , hostName : String ,completionHandler : @escaping (NSDictionary? , NSError?) -> Void?)
     {
-        let urlRequest = getUrlRequestWithUrl(urlString: Constants.ServiceApi.Login, hostName : dbName, postData: ["db" : dbName,"login" : userName, "password" : password])
+        let urlRequest = getUrlLoginRequestWithUrl(urlString: Constants.ServiceApi.Login, hostName : hostName, tenantId: dbName, postData: ["db" : dbName,"login" : userName, "password" : password,"hostname":hostName])
         webServiceCall(urlRequest: urlRequest, completionHandler:{ (serviceResultModel) -> Void in
                 completionHandler(serviceResultModel.returnValue as? NSDictionary,serviceResultModel.error as NSError?)
         })
@@ -45,7 +45,6 @@ class ServiceHelper: NSObject
         createPostData["from_date"] = convertDateToString(date: fromDate, format: Constants.DateConstants.DateFormatFromServer)
         createPostData["to_date"] = convertDateToString(date: toDate, format: Constants.DateConstants.DateFormatFromServer)
         createPostData["lines"] = []
-        print(createPostData)
         let urlRequest = getUrlRequestWithUrl(urlString: Constants.ServiceApi.CreateTimeSheet, hostName : getStringForKeyFromUserDefaults(key: Constants.UserDefaultsKey.DBName), postData: createPostData)
         webServiceCall(urlRequest: urlRequest, completionHandler:{ (serviceResultModel) -> Void in
             completionHandler(serviceResultModel.returnValue as? NSDictionary,serviceResultModel.error as NSError?)
@@ -74,12 +73,25 @@ class ServiceHelper: NSObject
         })
     }
     
+    func updateStatusForTimeSheetLineId(sheetId : Int, status : String, lineId : Int , completionHandler : @escaping (NSDictionary? , NSError?) -> Void?)
+    {
+        var updatePostData = getDefaultLoginDetail()
+        updatePostData["status"] = status
+        updatePostData["sheet_id"] = sheetId
+        updatePostData["line_id"] = lineId
+        let urlRequest = getUrlRequestWithUrl(urlString: Constants.ServiceApi.UpdateTimeSheetLineStatus, hostName : getStringForKeyFromUserDefaults(key: Constants.UserDefaultsKey.DBName), postData: updatePostData)
+        webServiceCall(urlRequest: urlRequest, completionHandler:{ (serviceResultModel) -> Void in
+            completionHandler(serviceResultModel.returnValue as? NSDictionary,serviceResultModel.error as NSError?)
+        })
+    }
+    
     func getDefaultLoginDetail() -> [String : Any]
     {
        return [
         "db" : getStringForKeyFromUserDefaults(key: Constants.UserDefaultsKey.DBName),
                "login" : getStringForKeyFromUserDefaults(key: Constants.UserDefaultsKey.UserName),
-               "password" : getStringForKeyFromUserDefaults(key: Constants.UserDefaultsKey.Password)
+               "password" : getStringForKeyFromUserDefaults(key: Constants.UserDefaultsKey.Password),
+               "hostname" : getStringForKeyFromUserDefaults(key: Constants.UserDefaultsKey.HostName)
         ]
     }
     
@@ -90,10 +102,40 @@ class ServiceHelper: NSObject
                 "jsonrpc":"2.0","method":"call","id":"2","params":postData
                 ] as Dictionary<String, Any>
         
+        
         //create the url with URL
-        let url = URL(string: "https://" + hostName + Constants.ServiceApi.DomainUrl + "/mobile/" + urlString)!
+        let url = URL(string: "https://" + hostName + "." + getStringForKeyFromUserDefaults(key :Constants.UserDefaultsKey.HostName) + "/mobile/" + urlString)!
         
 //        let url = URL(string: "http://" + Constants.ServiceApi.DomainUrl + "/mobile/" + urlString)!
+        
+        //now create the URLRequest object using the url object
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST" //set http method as POST
+        
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted) // pass dictionary to nsdata object and set it as request body
+            
+        } catch let error {
+            print(error.localizedDescription)
+        }
+        
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.addValue("application/json", forHTTPHeaderField: "Accept")
+        return request
+    }
+    
+    func getUrlLoginRequestWithUrl(urlString : String,hostName : String,tenantId : String, postData : [String : Any]) -> URLRequest
+    {
+        let parameters =
+            [
+                "jsonrpc":"2.0","method":"call","id":"2","params":postData
+                ] as Dictionary<String, Any>
+        
+        
+        //create the url with URL
+        let url = URL(string: "https://" + tenantId  + "." + hostName   + "/mobile/" + urlString)!
+        
+//                let url = URL(string: "http://" + Constants.ServiceApi.DomainUrl + "/mobile/" + urlString)!
         
         //now create the URLRequest object using the url object
         var request = URLRequest(url: url)
@@ -131,6 +173,7 @@ class ServiceHelper: NSObject
                     {
                         if let json = try JSONSerialization.jsonObject(with: data!, options: .allowFragments) as? [String: Any]
                         {
+                            print(json)
                             
                             if let result = json["result"]
                             {
@@ -138,7 +181,6 @@ class ServiceHelper: NSObject
                             }
                             else
                             {
-                                print(json)
                                 webServiceData.error = self.getLocalErrorWithCode(errorCode: 103, errorMessage: "Internal server error, Please try again later.")
                             }
                         }

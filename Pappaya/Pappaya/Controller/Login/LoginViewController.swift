@@ -8,10 +8,11 @@
 
 import UIKit
 
-class LoginViewController: UIViewController , UITextFieldDelegate
+class LoginViewController: UIViewController , UITextFieldDelegate,UIPickerViewDelegate, UIPickerViewDataSource
 {
     //MARK :- Variable
     //MARK:-- Outlet
+    @IBOutlet weak var tenantIdTxtFld: UITextField!
     @IBOutlet weak var userNameTxtFld: UITextField!
     @IBOutlet weak var passwordTxtFld: UITextField!
     @IBOutlet weak var hostNameTxtFld: UITextField!
@@ -20,6 +21,7 @@ class LoginViewController: UIViewController , UITextFieldDelegate
     //MARK:-- Class
     
     var currentTxtFld : UITextField = UITextField()
+    var domainList : [String] = ["pappaya.co.uk","pappaya.com"]
 
     override func viewDidLoad()
     {
@@ -38,22 +40,27 @@ class LoginViewController: UIViewController , UITextFieldDelegate
     {
         super.viewDidLayoutSubviews()
         setCornerRadiusForView(self.loginButton, cornerRadius: 5)
+        
+    }
+    
+    override func viewWillAppear(_ animated: Bool)
+    {
         self.bindToKeyboard()
-        self.hostNameTxtFld.text = "SIT"
-        self.userNameTxtFld.text = "senthil@think42labs.com"
-        self.passwordTxtFld.text = "pappaya"
-//        self.hostNameTxtFld.text = "pappaya"
-//        self.userNameTxtFld.text = "admin"
-//        self.passwordTxtFld.text = "reset123"
+        self.addDoneButtonToTextField()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool)
+    {
+        self.removeKeyBoardObserver()
     }
     
     //MARK:- Button Action
     @IBAction func loginButtonAction(_ sender: UIButton)
     {
-        if hostNameTxtFld.text?.characters.count == 0
+        if tenantIdTxtFld.text?.characters.count == 0
         {
-            let _ = CustomAlertController.alert(title: "Warning", message: "Enter Host name", acceptMessage: "OK", acceptBlock: {
-                self.hostNameTxtFld.becomeFirstResponder()
+            let _ = CustomAlertController.alert(title: "Warning", message: "Enter TenantID", acceptMessage: "OK", acceptBlock: {
+                self.tenantIdTxtFld.becomeFirstResponder()
             })
         }
         else if userNameTxtFld.text?.characters.count == 0
@@ -72,7 +79,7 @@ class LoginViewController: UIViewController , UITextFieldDelegate
         {
             self.view.endEditing(true)
             CustomActivityIndicator.shared.showProgressView()
-            ServiceHelper.sharedInstance.authendicateLogin(userName: userNameTxtFld.text!, password: passwordTxtFld.text!,dbName : hostNameTxtFld.text!, completionHandler: { (detailDict, error) -> Void in
+            ServiceHelper.sharedInstance.authendicateLogin(userName: userNameTxtFld.text!, password: passwordTxtFld.text!,dbName : tenantIdTxtFld.text!,hostName : hostNameTxtFld.text! , completionHandler: { (detailDict, error) -> Void in
                 
                 CustomActivityIndicator.shared.hideProgressView()
                 if let dict = detailDict
@@ -110,6 +117,60 @@ class LoginViewController: UIViewController , UITextFieldDelegate
         return true
     }
     
+    //MARK:- Picker view delegate
+    
+    func numberOfComponents(in pickerView: UIPickerView) -> Int
+    {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int
+    {
+        return domainList.count
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat
+    {
+        return 40
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String?
+    {
+        return domainList[row]
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int)
+    {
+        self.hostNameTxtFld.text = domainList[row]
+    }
+    
+    func doneButtonClicked()
+    {
+        self.view.endEditing(true)
+    }
+    
+    func addDoneButtonToTextField()
+    {
+        let toolbarDone = UIToolbar.init()
+        toolbarDone.sizeToFit()
+        let barBtnDone = UIBarButtonItem.init(barButtonSystemItem: UIBarButtonSystemItem.done,
+                                              target: self, action: #selector(LoginViewController.doneButtonClicked))
+        let flexSpace              = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.flexibleSpace, target: nil, action: nil)
+        toolbarDone.items = [flexSpace,barBtnDone] // You can even add cancel button too
+        self.hostNameTxtFld.inputAccessoryView = toolbarDone
+        self.tenantIdTxtFld.inputAccessoryView = toolbarDone
+        userNameTxtFld.inputAccessoryView = toolbarDone
+        passwordTxtFld.inputAccessoryView = toolbarDone
+        
+        let projectPickerView:UIPickerView = UIPickerView()
+        projectPickerView.frame.size.height = 125
+        projectPickerView.delegate = self
+        projectPickerView.dataSource = self
+        self.hostNameTxtFld.inputView = projectPickerView
+        
+            self.pickerView(projectPickerView, didSelectRow: 0, inComponent: 0)
+    }
+    
     //MARK:- Private Function
     
     fileprivate func bindToKeyboard()
@@ -118,10 +179,14 @@ class LoginViewController: UIViewController , UITextFieldDelegate
         NotificationCenter.default.addObserver(self, selector: #selector(LoginViewController.keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
     
-    func keyboardWillHide()
+    func removeKeyBoardObserver()
     {
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+    }
+    
+    func keyboardWillHide()
+    {
         
         UIView.animate(withDuration: 0.3, animations: {
             self.view.frame.origin.y = 0
@@ -147,10 +212,11 @@ class LoginViewController: UIViewController , UITextFieldDelegate
     {
         let detail = employeeDetail["detail"] as! [String : Any]
         var detailDict : [String : Any] = [
-            Constants.UserDefaultsKey.DBName : self.hostNameTxtFld.text!,
+            Constants.UserDefaultsKey.DBName : self.tenantIdTxtFld.text!,
             Constants.UserDefaultsKey.UserName : self.userNameTxtFld.text!,
             Constants.UserDefaultsKey.Password : self.passwordTxtFld.text!,
-            Constants.UserDefaultsKey.IsManager : employeeDetail["manager"] as! Bool,
+            Constants.UserDefaultsKey.HostName : self.hostNameTxtFld.text!,
+            Constants.UserDefaultsKey.IsManager : detail["manager"] as! Bool,
             Constants.UserDefaultsKey.UserFirstName : detail["first_name"] as! String,
             Constants.UserDefaultsKey.UserLastName : detail["last_name"] as! String,
             Constants.UserDefaultsKey.UserId : detail["user_id"] as! Int

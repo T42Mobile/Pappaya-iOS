@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="11542" systemVersion="16B2555" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="TimeSheetDateTable" representedClassName="TimeSheetDateTable" syncable="YES" codeGenerationType="class">
-        <attribute name="billable" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="billable" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="comment" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="date" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="dateObject" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
@@ -9,6 +9,7 @@
         <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="projectId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="projectName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="status" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="timeSheetId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
     </entity>
     <entity name="TimeSheetProjectTable" representedClassName="TimeSheetProjectTable" syncable="YES" codeGenerationType="class">
@@ -30,7 +31,7 @@
         <attribute name="userId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
     </entity>
     <elements>
-        <element name="TimeSheetDateTable" positionX="-54" positionY="63" width="128" height="180"/>
+        <element name="TimeSheetDateTable" positionX="-54" positionY="63" width="128" height="195"/>
         <element name="TimeSheetProjectTable" positionX="-54" positionY="72" width="128" height="75"/>
         <element name="TimeSheetTable" positionX="-63" positionY="-18" width="128" height="225"/>
     </elements>

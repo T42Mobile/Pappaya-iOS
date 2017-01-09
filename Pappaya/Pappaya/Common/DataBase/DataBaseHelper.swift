@@ -31,7 +31,8 @@ class DataBaseHelper: NSObject
                 
                 var listOfProject : String = ""
                 var listOfProjectName : String = ""
-                let projectList = timeSheetDetail["account_ids"] as! [NSDictionary]
+                
+                let projectList = self.saveTimeSheetDateTable(timeSheetId : timeSheetId, sheetList : detail["activities"] as! [[String : Any]])
                 
                 for index : Int in 0 ..< projectList.count
                 {
@@ -45,7 +46,6 @@ class DataBaseHelper: NSObject
                     listOfProject += String(projectDetail["id"] as! Int)
                     listOfProjectName += projectDetail["name"] as! String
                 }
-                self.saveTimeSheetDateTable(timeSheetId : timeSheetId, sheetList : detail["activities"] as! [[String : Any]])
                 
                 let dataDict : [String : Any] =
                     [
@@ -73,14 +73,25 @@ class DataBaseHelper: NSObject
         DataBaseBL.sharedInstance.insertListOfDataInTable(tableName: EntityName.TimeSheetProjectTable, dataDictList: projectList)
     }
     
-    func saveTimeSheetDateTable(timeSheetId : Int , sheetList : [[String : Any]])
+    func saveTimeSheetDateTable(timeSheetId : Int , sheetList : [[String : Any]]) -> [NSDictionary]
     {
+        var projectList : [NSDictionary] = []
         if sheetList.count > 0
         {
+            var projectIdList : [Int] = []
+            
             var sheetDetailList : [[String : Any]] = []
             for dictionary in sheetList
             {
                 let accountDetail : NSDictionary = dictionary["account_id"] as! NSDictionary
+                let account_id = accountDetail["id"] as! Int
+                
+                if !projectIdList.contains(account_id)
+                {
+                    projectIdList.append(account_id)
+                    projectList.append(accountDetail)
+                }
+                
                 let id = dictionary["id"] as! Int
                 let date = dictionary["date"] as! String
                 let predicate = NSPredicate(format: "id == %@", argumentArray: [id])
@@ -91,20 +102,22 @@ class DataBaseHelper: NSObject
                 
                 let dataDict : [String : Any] =
                     [
-                        TimeSheetDateTableColumnName.projectId : accountDetail["id"] as! Int ,
+                        TimeSheetDateTableColumnName.projectId : account_id ,
                         TimeSheetDateTableColumnName.projectName : accountDetail["name"] as! String,
                         TimeSheetDateTableColumnName.comment : dictionary["display_name"] as! String,
                         TimeSheetDateTableColumnName.hoursWorked : dictionary["unit_amount"] as! Double,
                         TimeSheetDateTableColumnName.date : date,
                         TimeSheetDateTableColumnName.timeSheetId : timeSheetId,
-                        TimeSheetDateTableColumnName.billable : BillableStatus.Billable.rawValue,
+                        TimeSheetDateTableColumnName.billable : dictionary["is_billable"] as! Bool,
                         TimeSheetDateTableColumnName.id : id,
                         TimeSheetDateTableColumnName.dateObject : convertDateFromString(dateString: date, dateFormate: Constants.DateConstants.DateFormatFromServer),
+                        TimeSheetDateTableColumnName.status : dictionary["status"] as! String
                         ]
                 sheetDetailList.append(dataDict)
             }
             DataBaseBL.sharedInstance.insertListOfDataInTable(tableName: EntityName.TimeSheetDateTable, dataDictList: sheetDetailList)
         }
+        return projectList
     }
     
     func deleteAllDataForTimeSheet()
@@ -186,7 +199,8 @@ class DataBaseHelper: NSObject
             timeSheetDateModel.hoursWorked = detail.value(forKey: TimeSheetDateTableColumnName.hoursWorked)as! Double
             timeSheetDateModel.dateObject = detail.value(forKey: TimeSheetDateTableColumnName.dateObject) as! Date
             timeSheetDateModel.dateString = detail.value(forKey: TimeSheetDateTableColumnName.date) as! String
-            timeSheetDateModel.isBillable = BillableStatus(rawValue : detail.value(forKey: TimeSheetDateTableColumnName.billable) as! String)!
+            timeSheetDateModel.isBillable = detail.value(forKey: TimeSheetDateTableColumnName.billable) as! Bool
+            timeSheetDateModel.lineStatus = TimeSheetLineStatus(rawValue: detail.value(forKey: TimeSheetDateTableColumnName.status) as! String)!
             timeSheetDateList.append(timeSheetDateModel)
         }
         return timeSheetDateList
@@ -254,6 +268,7 @@ struct TimeSheetDateTableColumnName
     static let date : String = "date"
     static let timeSheetId : String = "timeSheetId"
     static let dateObject : String = "dateObject"
+    static let status : String = "status"
 }
 
 struct TimeSheetProjectTableColumnName

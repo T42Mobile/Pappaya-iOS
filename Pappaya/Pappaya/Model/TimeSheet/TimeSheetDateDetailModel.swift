@@ -41,10 +41,11 @@ class TimeSheetDateModel
     var hoursWorked : Double = 8.00
     var comment : String = ""
     var projectName : String = ""
-    var isBillable : BillableStatus = BillableStatus.Billable
+    var isBillable : Bool = true
     var sheetId : Int = 0
     var projectId : Int = 0
     var timeSheetId : Int = 0
     var is_timeSheet : Bool = true
+    var lineStatus : TimeSheetLineStatus = TimeSheetLineStatus.Open
 
 }

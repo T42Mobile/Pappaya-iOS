@@ -43,22 +43,14 @@ class UserSideMenuViewController: UIViewController, UITableViewDelegate, UITable
         }
         self.nameLabel.text = getStringForKeyFromUserDefaults(key: Constants.UserDefaultsKey.UserFirstName) + " "  + getStringForKeyFromUserDefaults(key: Constants.UserDefaultsKey.UserLastName)
         self.profileImageButton.setImage(getUserImage(), for: UIControlState.normal)
-        CustomActivityIndicator.shared.showProgressView()
-        ServiceHelper.sharedInstance.getListOfTimeSheet(completionHandler: { (detailDict, error) -> Void in
-            CustomActivityIndicator.shared.hideProgressView()
-            if let dict = detailDict
-            {
-                TimeSheetBL.sharedInstance.convertTimeSheetDetailFromServerToModel(detailDict: dict)
-                
-                // Post notification
-                NotificationCenter.default.post(name: Notification.Name("updateWeekly"), object: nil)
-            }
-            else
-            {
-                _ = CustomAlertController.alert(title: "Alert", message: error!.localizedDescription)
-            }
-        })
         
+        // Define identifier
+        let notificationName = Notification.Name("updateTimeSheet")
+        
+        // Register to receive notification
+        NotificationCenter.default.addObserver(self, selector: #selector(UserSideMenuViewController.updateTimeSheetDetail), name: notificationName, object: nil)
+        
+        self.updateTimeSheetDetail()
     }
     
     override func didReceiveMemoryWarning()
@@ -153,6 +145,25 @@ class UserSideMenuViewController: UIViewController, UITableViewDelegate, UITable
             cell.sectionLabel.text = "General Setting"
         }
         return cell.contentView
+    }
+    
+    func updateTimeSheetDetail()
+    {
+        CustomActivityIndicator.shared.showProgressView()
+        ServiceHelper.sharedInstance.getListOfTimeSheet(completionHandler: { (detailDict, error) -> Void in
+            CustomActivityIndicator.shared.hideProgressView()
+            if let dict = detailDict
+            {
+                TimeSheetBL.sharedInstance.convertTimeSheetDetailFromServerToModel(detailDict: dict)
+                
+                // Post notification
+                NotificationCenter.default.post(name: Notification.Name("updateWeekly"), object: nil)
+            }
+            else
+            {
+                _ = CustomAlertController.alert(title: "Alert", message: error!.localizedDescription)
+            }
+        })
     }
     
     // MARK:- Private functions

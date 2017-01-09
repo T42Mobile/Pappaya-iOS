@@ -114,4 +114,10 @@ class TimeSheetBL: NSObject
         DataBaseBL.sharedInstance.updateRowsInTable(tableName: EntityName.TimeSheetTable, dataDict: [TimeSheetTableColumnName.status : status.rawValue], predicate: predicate)
     }
     
+    func updateStateForTimeSheetLineId(lineId : Int, status : TimeSheetLineStatus)
+    {
+        let predicate = NSPredicate(format: TimeSheetDateTableColumnName.id + " == %@", argumentArray: [lineId])
+        DataBaseBL.sharedInstance.updateRowsInTable(tableName: EntityName.TimeSheetDateTable, dataDict: [TimeSheetDateTableColumnName.status : status.rawValue], predicate: predicate)
+    }
+    
 }

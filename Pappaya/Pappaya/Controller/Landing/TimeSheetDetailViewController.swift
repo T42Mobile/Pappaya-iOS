@@ -23,8 +23,6 @@ class TimeSheetDetailViewController: UIViewController, UITableViewDelegate , UIT
     @IBOutlet weak var totalHoursLabel: UILabel!
     @IBOutlet weak var tableEmptyStateView: UIView!
     
-    @IBOutlet weak var rightBtn: RoundCornerButton!
-    @IBOutlet weak var leftBtn: RoundCornerButton!
     @IBOutlet weak var bottomViewHgtCnt: NSLayoutConstraint!
     
     @IBOutlet weak var addBtn: RoundCornerButton!
@@ -112,16 +110,42 @@ class TimeSheetDetailViewController: UIViewController, UITableViewDelegate , UIT
         cell.dateLabel.attributedText = getDisplayDate(dateObject: dateDetail.dateObject)
         cell.projectLabel.text = dateDetail.projectName
         cell.timeLabel.text = String(dateDetail.hoursWorked) + " Hrs"
+        if dateDetail.isBillable
+        {
+            cell.billableLabel.text = "Billable"
+        }
+        else
+        {
+            cell.billableLabel.text = "Non-Billable"
+        }
+        let dict : [String : String] = ["draft":"Open","pending" : "Waiting for Approval","approved":"Approved","refused":"Rejected"]
+        cell.statusLabel.text = dict[dateDetail.lineStatus.rawValue]
+        
+        if dateDetail.lineStatus == TimeSheetLineStatus.Pending && self.timeSheetType == TimeSheetListView.TimeSheetToApprove
+        {
+            cell.bottomView.isHidden = false
+            cell.approveBtn.tag = indexPath.row
+            cell.rejectBtn.tag = indexPath.row
+        }
+        else
+        {
+            cell.bottomView.isHidden = true
+        }
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool
     {
-        if timeSheetDetail.status == TimeSheetStatus.Open
+        if timeSheetType == TimeSheetListView.MyTimeSheet
         {
-            return true
+            let detail = timeSheetDateList[indexPath.row]
+            if detail.lineStatus == TimeSheetLineStatus.Open || detail.lineStatus == TimeSheetLineStatus.Rejected
+            {
+                return true
+            }
         }
+        
         return false
     }
     
@@ -135,6 +159,7 @@ class TimeSheetDetailViewController: UIViewController, UITableViewDelegate , UIT
             addTimeSheet_VC.timeSheetDateModelList = self.timeSheetDateList
             addTimeSheet_VC.timeSheetDateDetail = self.timeSheetDateList[indexPath.row]
             addTimeSheet_VC.delegate = self
+            addTimeSheet_VC.indexPath = indexPath
             getAppDelegate().rootNavigationController.pushViewController(addTimeSheet_VC, animated: true)
             
             self.tableView.reloadData()
@@ -152,6 +177,7 @@ class TimeSheetDetailViewController: UIViewController, UITableViewDelegate , UIT
                     {
                         self.timeSheetDateList[indexPath.row].is_timeSheet = false
                     }
+                    self.updateTimeSheetList(modelList: self.timeSheetDateList)
                     self.tableView.reloadData()
                 }
             })
@@ -195,51 +221,40 @@ class TimeSheetDetailViewController: UIViewController, UITableViewDelegate , UIT
     
     @IBAction func leftButtonAction(_ sender: RoundCornerButton)
     {
-        if timeSheetType == TimeSheetListView.MyTimeSheet
-        {
-            self.updateTimeSheetDetail()
-        }
-        else
-        {
-            self.updateTimeSheetStatus(status: TimeSheetStatus.Open)
-        }
+        self.updateTimeSheetDetail(isSubmit: false)
     }
     
     @IBAction func rightButtonAction(_ sender: RoundCornerButton)
     {
-        if timeSheetType == TimeSheetListView.TimeSheetToApprove
-        {
-            self.updateTimeSheetStatus(status: TimeSheetStatus.Approved)
-        }
-        else
-        {
-            self.updateTimeSheetStatus(status: TimeSheetStatus.WaitingForApproval)
-        }
+        self.updateTimeSheetDetail(isSubmit: true)
+    }
+    
+    @IBAction func rejectButtonAction(_ sender: UIButton)
+    {
+        self.updateTimeSheetLineStatus(status: TimeSheetLineStatus.Rejected, row: sender.tag)
+    }
+    
+    @IBAction func approveButtonAction(_ sender: UIButton)
+    {
+        self.updateTimeSheetLineStatus(status: TimeSheetLineStatus.Approved, row: sender.tag)
     }
     
     //MARK:- Private function
     
     func setTimeSheetDetail()
     {
-        self.addBtn.isHidden = true
-        self.emptyStateAddBtn.isHidden = true
-        self.bottomViewHgtCnt.constant = 0
-        if timeSheetType == TimeSheetListView.TimeSheetToApprove
+        
+        if timeSheetType == TimeSheetListView.MyTimeSheet
         {
-            self.leftBtn.setTitle("Reject", for: UIControlState.normal)
-            self.rightBtn.setTitle("Accept", for: UIControlState.normal)
             self.bottomViewHgtCnt.constant = 34
+            self.addBtn.isHidden = false
+            self.emptyStateAddBtn.isHidden = false
         }
         else
         {
-            if timeSheetDetail.status == TimeSheetStatus.Open
-            {
-                self.leftBtn.setTitle("Save", for: UIControlState.normal)
-                self.rightBtn.setTitle("Submit", for: UIControlState.normal)
-                self.bottomViewHgtCnt.constant = 34
-                self.addBtn.isHidden = false
-                self.emptyStateAddBtn.isHidden = false
-            }
+            self.bottomViewHgtCnt.constant = 0
+            self.addBtn.isHidden = true
+            self.emptyStateAddBtn.isHidden = true
         }
 
         self.employeeName.text = self.timeSheetDetail.employeeName
@@ -256,31 +271,46 @@ class TimeSheetDetailViewController: UIViewController, UITableViewDelegate , UIT
         var totalHrs : Double = 0.0
         for detail in self.timeSheetDateList
         {
-            totalHrs += detail.hoursWorked
+            print(detail.sheetId)
+            if detail.is_timeSheet
+            {
+                totalHrs += detail.hoursWorked
+            }
         }
         self.timeSheetDetail.totalHoursWorked = totalHrs
         self.totalHoursLabel.text = String(totalHrs) + " Hrs"
-        self.tableView.reloadData()
+        
+        self.setTimeSheetDetail()
     }
     
-    private func updateTimeSheetDetail()
+    private func updateTimeSheetDetail(isSubmit : Bool)
     {
-        if timeSheetDateList.count > 0
+        var lineList : [NSDictionary] = []
+        for detail in timeSheetDateList
         {
-            var lineList : [NSDictionary] = []
-            for detail in timeSheetDateList
+            if detail.lineStatus != TimeSheetLineStatus.Approved
             {
+                var status = detail.lineStatus.rawValue
+                if isSubmit
+                {
+                    status = TimeSheetLineStatus.Pending.rawValue
+                }
                 let lineDict : NSDictionary = [
                     "line_id" : detail.sheetId,
                     "name" : detail.comment,
                     "unit_amount" : detail.hoursWorked,
                     "account_id" : detail.projectId,
                     "is_timesheet" : detail.is_timeSheet,
-                    "date" : detail.dateObject.getDateStringInServerFormat()
+                    "date" : detail.dateObject.getDateStringInServerFormat(),
+                    "is_billable" : detail.isBillable,
+                    "status" : status
                 ]
                 lineList.append(lineDict)
             }
-            
+        }
+        
+        if lineList.count > 0
+        {
             CustomActivityIndicator.shared.showProgressView()
             ServiceHelper.sharedInstance.updateTimeSheetForId(sheetId: self.timeSheetDetail.timeSheetId, lines: lineList,  completionHandler: { (detailDict, error) -> Void in
                 CustomActivityIndicator.shared.hideProgressView()
@@ -296,7 +326,6 @@ class TimeSheetDetailViewController: UIViewController, UITableViewDelegate , UIT
                         self.setTimeSheetDetail()
                         
                         _ = CustomAlertController.alert(title: "Success", message: "Updated successfully.")
-                        
                     }
                     else
                     {
@@ -354,4 +383,32 @@ class TimeSheetDetailViewController: UIViewController, UITableViewDelegate , UIT
             }
         })
     }
+    
+    func updateTimeSheetLineStatus(status : TimeSheetLineStatus, row : Int)
+    {
+        CustomActivityIndicator.shared.showProgressView()
+        ServiceHelper.sharedInstance.updateStatusForTimeSheetLineId(sheetId: self.timeSheetDetail.timeSheetId, status: status.rawValue, lineId : timeSheetDateList[row].sheetId ,  completionHandler: { (detailDict, error) -> Void in
+            CustomActivityIndicator.shared.hideProgressView()
+            if let dict = detailDict
+            {
+                let state = dict["status"] as! Int
+                
+                if state == 200
+                {
+                    self.timeSheetDateList[row].lineStatus = status
+                    TimeSheetBL.sharedInstance.updateStateForTimeSheetLineId(lineId: self.timeSheetDateList[row].sheetId, status: status)
+                    self.tableView.reloadData()
+                }
+                else
+                {
+                    _ = CustomAlertController.alert(title: "Alert", message: "Please try again later.")
+                }
+            }
+            else
+            {
+                _ = CustomAlertController.alert(title: "Alert", message: error!.localizedDescription)
+            }
+        })
+    }
+    
 }
